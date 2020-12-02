@@ -1,0 +1,13 @@
+\chapter{Método Proposto}
+
+\section{O Algoritmo}
+Vamo fazer um teste.
+
+\begin{figure}[hb]
+\centering
+\includegraphics{Imagens/minerva}
+\caption{Deusa Minerva.}
+\label{fig:minerva}
+\end{figure}
+
+Isso foi um teste.

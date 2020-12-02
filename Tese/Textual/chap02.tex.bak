@@ -4,7 +4,7 @@ Em um disco de freios ocorrem os três tipos de transferência de calor descrito
 
 A condução pode ser interpretada como um fenômeno difusivo onde ocorre transferência de energia das partículas mais energéticas para as menos energéticas através das interações entre partículas. Em um sólido essas interações ocorrem através da combinação entre a vibração das moléculas dos retículos cristalinos e a movimentação dos elétrons livres. Para a condução a equação que descreve a taxa de transferência de calor é conhecida como a \textit{lei de Fourier}.
 
-$$ \textbf{q} = -k \bigtriangledown \textbf{T} = -k \left(\textbf{i} \frac{dT}{dx} + \textbf{j} \frac{dT}{dy} + \textbf{k} \frac{dT}{dz} \right) $$
+$$ \textbf{q} = -k \nabla \textbf{T} = -k \left(\textbf{i} \frac{dT}{dx} + \textbf{j} \frac{dT}{dy} + \textbf{k} \frac{dT}{dz} \right) $$
 
 sendo $\textbf{q}$ o fluxo de calor e $k$ a condutividade térmica.
 

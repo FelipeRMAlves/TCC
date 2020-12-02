@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.8)  18 JUL 2020 00:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.8)  28 NOV 2020 20:36
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -359,9 +359,42 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.st
+y
+\lst@mode=\count273
+\lst@gtempboxa=\box51
+\lst@token=\toks27
+\lst@length=\count274
+\lst@currlwidth=\dimen167
+\lst@column=\count275
+\lst@pos=\count276
+\lst@lostspace=\dimen168
+\lst@width=\dimen169
+\lst@newlines=\count277
+\lst@lineno=\count278
+\lst@maxwidth=\dimen170
+
+(C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count279
+\lst@skipnumbers=\count280
+\lst@framebox=\box52
+)
+(C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2020/03/24 1.8d listings configuration
 ))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+(C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+Package: color 2019/11/23 v1.2a Standard LaTeX Color (DPC)
+
+(C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+)
 \@losfile=\write3
 \openout3 = `thesis.syx'.
+
 
 Writing index of symbols file thesis.syx
 \@labfile=\write4
@@ -372,35 +405,35 @@ Writing index of abbreviations file thesis.abx
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 mode.def
 File: l3backend-pdfmode.def 2020-06-29 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count273
-\l__pdf_internal_box=\box51
+\l__kernel_color_stack_int=\count281
+\l__pdf_internal_box=\box53
 ) (thesis.aux (Pre-textual/dedic.aux) (Pre-textual/thanks.aux)
 (Pre-textual/resumo.aux) (Pre-textual/abstract.aux) (Textual/chap01.aux)
 (Textual/chap02.aux) (Textual/chap03.aux) (Textual/chap04.aux)
 (Textual/chap05.aux) (Pos-textual/appenA.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 8.
-\AtBeginShipoutBox=\box52
-Package hyperref Info: Link coloring OFF on input line 8.
+(lastpage)             ! on input line 10.
+\AtBeginShipoutBox=\box54
+Package hyperref Info: Link coloring OFF on input line 10.
 
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -412,11 +445,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count274
+\c@section@level=\count282
 )
-LaTeX Info: Redefining \ref on input line 8.
-LaTeX Info: Redefining \pageref on input line 8.
-LaTeX Info: Redefining \nameref on input line 8.
+LaTeX Info: Redefining \ref on input line 10.
+LaTeX Info: Redefining \pageref on input line 10.
+LaTeX Info: Redefining \nameref on input line 10.
  (thesis.out) (thesis.out)
 \@outlinefile=\write5
 \openout5 = `thesis.out'.
@@ -425,17 +458,17 @@ LaTeX Info: Redefining \nameref on input line 8.
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count275
-\scratchdimen=\dimen167
-\scratchbox=\box53
-\nofMPsegments=\count276
-\nofMParguments=\count277
-\everyMPshowfont=\toks27
-\MPscratchCnt=\count278
-\MPscratchDim=\dimen168
-\MPnumerator=\count279
-\makeMPintoPDFobject=\count280
-\everyMPtoPDFconversion=\toks28
+\scratchcounter=\count283
+\scratchdimen=\dimen171
+\scratchbox=\box55
+\nofMPsegments=\count284
+\nofMParguments=\count285
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count286
+\MPscratchDim=\dimen172
+\MPnumerator=\count287
+\makeMPintoPDFobject=\count288
+\everyMPtoPDFconversion=\toks29
 )
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -477,22 +510,23 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+\c@lstlisting=\count289
 <Logo_poli.jpg, id=67, 124.21407pt x 124.21407pt>
 File: Logo_poli.jpg Graphic file (type jpg)
 <use Logo_poli.jpg>
-Package pdftex.def Info: Logo_poli.jpg  used on input line 22.
+Package pdftex.def Info: Logo_poli.jpg  used on input line 24.
 (pdftex.def)             Requested size: 124.21375pt x 124.21375pt.
 
-Underfull \hbox (badness 2302) in paragraph at lines 22--22
+Underfull \hbox (badness 2302) in paragraph at lines 24--24
 []\OT1/cmr/m/n/12 Projeto de Graduac~ao apresentado ao Curso
  []
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 22.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 24.
 
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 22.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
 
 
 (C:\Users\felip\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -506,24 +540,24 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <Logo_mec.jpg, id=74, 127.97812pt x 115.93312pt>
 File: Logo_mec.jpg Graphic file (type jpg)
 <use Logo_mec.jpg>
-Package pdftex.def Info: Logo_mec.jpg  used on input line 24.
+Package pdftex.def Info: Logo_mec.jpg  used on input line 26.
 (pdftex.def)             Requested size: 55.48495pt x 50.26244pt.
 File: Logo_poli.jpg Graphic file (type jpg)
 <use Logo_poli.jpg>
-Package pdftex.def Info: Logo_poli.jpg  used on input line 24.
+Package pdftex.def Info: Logo_poli.jpg  used on input line 26.
 (pdftex.def)             Requested size: 55.48495pt x 55.48451pt.
 
-Overfull \hbox (25.61293pt too wide) in paragraph at lines 24--24
+Overfull \hbox (25.61293pt too wide) in paragraph at lines 26--26
  [][][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
+Underfull \hbox (badness 10000) in paragraph at lines 26--26
 \OT1/cmr/m/n/12 DE ENGENHARIA MEC[]ANICA DA ESCOLA POLIT[]ECNICA DA
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
+Underfull \hbox (badness 10000) in paragraph at lines 26--26
 \OT1/cmr/m/n/12 UNIVERSIDADE FEDERAL DO RIO DE JANEIRO COMO PARTE
  []
 
@@ -531,10 +565,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 
  <./Logo_mec.jpg>]
 
-LaTeX Warning: Reference `bib:begin' on page iii undefined on input line 24.
+LaTeX Warning: Reference `bib:begin' on page iii undefined on input line 26.
 
 
-LaTeX Warning: Reference `bib:end' on page iii undefined on input line 24.
+LaTeX Warning: Reference `bib:end' on page iii undefined on input line 26.
 
 [3
 
@@ -669,30 +703,30 @@ Ap\^endice A.
 
 ] 
 AED: lastpage setting LastPage
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 48.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 48.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 50.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 50.
 (thesis.aux (Pre-textual/dedic.aux) (Pre-textual/thanks.aux)
 (Pre-textual/resumo.aux) (Pre-textual/abstract.aux) (Textual/chap01.aux)
 (Textual/chap02.aux) (Textual/chap03.aux) (Textual/chap04.aux)
 (Textual/chap05.aux) (Pos-textual/appenA.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 48.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 48.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 50.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 50.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: 74F270B013D99751F19418DFDB32B2BE;1008.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 48.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 50.
  ) 
 Here is how much of TeX's memory you used:
- 8191 strings out of 480790
- 124312 string characters out of 2897302
- 411313 words of memory out of 3000000
- 23897 multiletter control sequences out of 15000+200000
+ 9567 strings out of 480790
+ 143335 string characters out of 2897302
+ 432955 words of memory out of 3000000
+ 25257 multiletter control sequences out of 15000+200000
  544821 words of font info for 70 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 45i,11n,35p,915b,354s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 45i,11n,36p,915b,355s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Users/felip/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx12.pfb><C:/Users/felip/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmbxti10.pfb><C:/Users/felip/AppData/Local/Programs/MiKTeX/fonts/type1
@@ -706,7 +740,7 @@ s/felip/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 ><C:/Users/felip/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
 msy8.pfb><C:/Users/felip/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
 nts/cm/cmti12.pfb>
-Output written on thesis.pdf (18 pages, 236368 bytes).
+Output written on thesis.pdf (18 pages, 236503 bytes).
 PDF statistics:
  240 PDF objects out of 1000 (max. 8388607)
  42 named destinations out of 1000 (max. 500000)

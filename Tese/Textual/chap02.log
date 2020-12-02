@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.4)  4 JUL 2020 17:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=latex 2020.11.28)  28 NOV 2020 20:20
 entering extended mode
 **./chap02.tex
 (chap02.tex
@@ -1378,7 +1378,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.7 $
-     $ \vec{q} = -k \bigtriangledown \vec{T} = -k \left(\vec{i} \frac{dT}{dx...
+     $ \textbf{q} = -k \nabla \textbf{T} = -k \left(\textbf{i} \frac{dT}{dx}...
 
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -1392,21 +1392,10 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 7.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 7.
-! Missing \right. inserted.
-<inserted text> 
-                \right .
-l.7 ...j} \frac{dT}{dy} + \vec{k} \frac{dT}{dz}) $
-                                                  $
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
 
-
-Overfull \hbox (170.93813pt too wide) detected at line 7
-[] \/cmr/m/n/10 = \OMS/cmsy/m/n/10  \OML/cmm/m/it/10 k \OMS/cmsy/m/n/10 5 [] \/
-cmr/m/n/10 = \OMS/cmsy/m/n/10  \OML/cmm/m/it/10 k []
+Overfull \hbox (173.78989pt too wide) detected at line 7
+[] \/cmr/m/n/10 = \OMS/cmsy/m/n/10  \OML/cmm/m/it/10 k\OMS/cmsy/m/n/10 r[] \/cm
+r/m/n/10 = \OMS/cmsy/m/n/10  \OML/cmm/m/it/10 k []
  []
 
 
@@ -1417,7 +1406,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.9 s
-     endo $\vec{q}$ o fluxo de calor e $k$ a condutividade térmica.
+     endo $\textbf{q}$ o fluxo de calor e $k$ a condutividade térmica.
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
@@ -1467,7 +1456,7 @@ Overfull \hbox (20.0pt too wide) in paragraph at lines 9--10
  []
 
 
-Overfull \hbox (4.8229pt too wide) in paragraph at lines 9--10
+Overfull \hbox (6.06941pt too wide) in paragraph at lines 9--10
 []$
  []
 
@@ -1678,11 +1667,11 @@ Overfull \hbox (72.07486pt too wide) detected at line 21
 
  
 Here is how much of TeX's memory you used:
- 40 strings out of 480790
- 654 string characters out of 2907053
- 241890 words of memory out of 3000000
+ 40 strings out of 480791
+ 612 string characters out of 2897326
+ 241887 words of memory out of 3000000
  16149 multiletter control sequences out of 15000+200000
  532992 words of font info for 26 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  17i,7n,22p,874b,99s stack positions out of 5000i,500n,10000p,200000b,50000s
-!  ==> Fatal error occurred, no output PDF file produced!
+No pages of output.
