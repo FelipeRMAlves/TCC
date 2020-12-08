@@ -54,7 +54,6 @@ for e in range(0, malha.ne):
     from Matrizes2D import matriz2D
     sq = matriz2D(v1=v1, v2=v2, v3=v3, X=malha.X, Y=malha.Y)
     area = sq.areaCalc()
-    melem = sq.matrizm()
     kelem = sq.matrizk()
 
     for ilocal in range(0, 3):
@@ -63,7 +62,6 @@ for e in range(0, malha.ne):
             jglobal = malha.matriz_IEN()[e, jlocal]
 
             K[iglobal, jglobal] = K[iglobal, jglobal] + kelem[ilocal, jlocal]
-            M[iglobal, jglobal] = M[iglobal, jglobal] + melem[ilocal, jlocal]
 
     print(f'{round(100*e/malha.ne, 0)} % - calculando  matrizes...')
 
