@@ -1,28 +1,8 @@
-## =================================================================== ##
-#  this is file calor2d-fem.py, created at 25-Jun-2020                #
-#  maintained by Gustavo Rabello dos Anjos                              #
-#  e-mail: gustavo.rabello@gmail.com                                    #
-## =================================================================== ##
-
 # Solucao do problema termico 2D permanente usando MEF
 #
 #   Lap(T) = 0
 #
-# Com c.c.s de Dirichlet de acordo com PDF disponivel no site
-
-# Tarefas:
-#
-# 1) criar malha arbitraria com varios pontos e elementos -> OK
-# 2) usar scipy para estrutura de dados esparsa -> OK
-# 3) imposicao das c.c.s de Dirichlet mantendo a matriz simetrica -> OK
-# 4) solucao do sistema linear pelo met. gradientes conjugados (cg) -> OK
-# 5) fazer o transiente -> OK
-#
-#   dT
-#   -- = alpha*Lap(T)
-#   dt
-#
-# 6) resolver o permanente e o transiente usando elemento Quadrilatero -> OK
+# Com c.c.s de Dirichlet
 
 
 from Mesh_2D import mesh2d
@@ -80,13 +60,13 @@ for b in range(nx * (ny-1), malha.npoints):
 
 # imposicao das condicoes de contorno de Dirichlet
 # deixando a matriz k simetrica (passa os valores para o outro lado)
-f = np.zeros((malha.npoints), dtype='double')
+b = np.zeros((malha.npoints), dtype='double')
 for i in bound:
     K[i, :] = 0.0  # zera a linha toda
-    f[i] = bval[i]
+    b[i] = bval[i]
     for j in range(malha.npoints):
         # passa os valores para o outro lado da equacao
-        f[j] = f[j] - K[j, i]*bval[i]
+        b[j] = b[j] - K[j, i]*bval[i]
     K[:, i] = 0.0
     K[i, i] = 1.0
 
@@ -98,7 +78,7 @@ print(check_symmetric(K, tol=1e-8))
 
 
 # solucao do sistema linear
-T = cg(K, f)[0]
+T = cg(K, b)[0]
 print('T=',T)
 plotado = malha.plotSol(var=T)
 plt.show()
