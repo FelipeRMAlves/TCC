@@ -1,1 +1,0 @@
-https://jonathanvelasco.com/2016/11/26/basic-2d-geometry-creation-using-gmsh/
