@@ -1,7 +1,8 @@
 
 
 from Mesh_2D import mesh2d
-from pyevtk.hl import gridToVTK 
+from pyevtk.hl import gridToVTK
+import meshio
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.sparse.linalg import cg
@@ -16,24 +17,46 @@ time = 0.0
 dt = 0.1
 nIter = 50
 
-# 2) Definicao da malha pelo usuario
-nx = 30
-ny = 10
-Lx = 3
-Ly = 1
-lados = 4  # num de lados do elemento da malha
 
-# 2.1) Importacao da malha 
-malha = mesh2d(Lx, Ly, nx, ny, lados)
-npoints = malha.npoints
-ne = malha.ne
-X = malha.X
-Y = malha.Y
-IEN = malha.matriz_IEN()
-bound = malha.bound
-inner = malha.inner
+# 2) Importacao da malha (GMSH)
+filename = 'minha_malha'
+formato = '.msh'
+msh = meshio.read(filename + formato)
+X = msh.points[:, 0]
+Y = msh.points[:, 1]
+Z = msh.points[:, 2]
+npoints = len(X)
 
-print(IEN)
+IEN = msh.cells[-1][1]   # msh.cells['tetra']
+ne = len(IEN)
+IENbound = []
+for elem in msh.cells:
+    if elem[0] == 'line':
+        IENbound.append(elem[1])
+print(IENbound)
+IENboundTypeElem = list(msh.cell_data['gmsh:physical'])
+boundNames = list(msh.field_data.keys())
+
+IENboundElem = []
+for elem in IENboundTypeElem:
+    IENboundElem.append(boundNames[elem-1])
+
+# cria lista de nos do contorno
+cc = np.unique(IENbound.reshape(IENbound.size))
+ccName = [[] for i in range(len(X))]
+for elem in range(0, len(IENbound)):
+    ccName[IENbound[elem][0]] = IENboundElem[elem]
+    ccName[IENbound[elem][1]] = IENboundElem[elem]
+
+# Consertando bug para malha do aerofolio
+if filename == 'airfoil_naca':
+    for i in range(6, 60):
+        ccName[i] = 'cylinder'
+
+#  2.1) Plot malha e pontos de contorno
+plt.triplot(X, Y, IEN, 'k-')
+plt.plot(X[cc], Y[cc], 'bo')
+plt.show()
 
 
 
@@ -64,7 +87,7 @@ for e in range(0, ne):
     v1 = IEN[e, 0]
     v2 = IEN[e, 1]
     v3 = IEN[e, 2]
-    v4 = 
+    v4 = IEN[e, 2] # fix this
 
     from Matrizes2D import matriz2D
     sq = matriz2D(v1=v1, v2=v2, v3=v3, v4=v4, X=malha.X, Y=malha.Y)
