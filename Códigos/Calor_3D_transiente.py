@@ -25,14 +25,17 @@ msh = meshio.read(filename + formato)
 X = msh.points[:, 0]
 Y = msh.points[:, 1]
 Z = msh.points[:, 2]
-npoints = len(X)
+npoints = len(X)         # numero de nos
 
-IEN = msh.cells[-1][1]   # msh.cells['tetra']
-ne = len(IEN)
-IENbound = []
+IENbound = []            # nos do contorno
 for elem in msh.cells:
     if elem[0] == 'line':
         IENbound.append(elem[1])
+    elif elem[0] == 'tetra':
+        IEN = elem[1]
+print('IEN: \n',IEN)
+ne = len(IEN)            # numero de elementos tetraedricos
+    
 print(IENbound)
 IENboundTypeElem = list(msh.cell_data['gmsh:physical'])
 boundNames = list(msh.field_data.keys())

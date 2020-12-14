@@ -50,19 +50,27 @@ domain_physical_tag = 1001  # the volume
 gmsh.model.addPhysicalGroup(dim=3, tags=[domain_tag], tag=domain_physical_tag)
 gmsh.model.setPhysicalName(dim=3, tag=domain_physical_tag, name="Whole domain")
 
-# Find domain boundary tags
-boundary_dimtags = gmsh.model.getBoundary(dimTags=[(3, domain_tag)],
+
+# O volume tem planos de contorno. Os planos tem retas. As retas tem pontos
+planos_cont = gmsh.model.getBoundary(dimTags=[(3, domain_tag)],
                                           oriented=False)
-boundary_tags = []
+retas_cont = []
+pontos_cont = []
 n = -1
-for tag in boundary_dimtags:
+for plano in planos_cont:
     n = n + 1
-    boundary_tags.append(tag[1])
-    gmsh.model.addPhysicalGroup(dim=2, tags=[tag[1]], tag=n)
-    gmsh.model.setPhysicalName(dim=2,tag=n,name=f'cc{n}')
+    # gmsh.model.addPhysicalGroup(dim=2, tags=[plano[1]], tag=n)
+    # gmsh.model.setPhysicalName(dim=2,tag=n,name=f'cc{n}')
+    retas = gmsh.model.getBoundary(dimTags=[plano], oriented=False)
+    retas_cont.append(retas)
+    for r in retas:
+        noh = gmsh.model.getBoundary(dimTags=[r], oriented=False)
+        pontos_cont.append(noh)
+
 
 # entities = gmsh.model.getEntities()
 # print(entities)
+
 
 
 # sincronizar o modelo
