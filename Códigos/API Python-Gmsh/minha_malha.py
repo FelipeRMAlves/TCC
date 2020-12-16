@@ -56,6 +56,7 @@ planos_cont = gmsh.model.getBoundary(dimTags=[(3, domain_tag)],
                                           oriented=False)
 retas_cont = []
 pontos_cont = []
+contorno_dic = {}
 n = -1
 for plano in planos_cont:
     n = n + 1
@@ -63,15 +64,19 @@ for plano in planos_cont:
     # gmsh.model.setPhysicalName(dim=2,tag=n,name=f'cc{n}')
     retas = gmsh.model.getBoundary(dimTags=[plano], oriented=False)
     retas_cont.append(retas)
+    contorno_dic[plano[1]] = {}
     for r in retas:
         noh = gmsh.model.getBoundary(dimTags=[r], oriented=False)
         pontos_cont.append(noh)
+        nohs = []
+        for p in noh:
+            nohs.append(p[1])
+        contorno_dic[plano[1]][r[1]] = nohs
+
 
 
 # entities = gmsh.model.getEntities()
 # print(entities)
-
-
 
 # sincronizar o modelo
 gmsh.model.geo.synchronize()
