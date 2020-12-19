@@ -1,0 +1,8 @@
+No Python:
+
+Criar excel e transformar para csv file com colunas [X,Y,Z,T];
+Abrir arquivo .csv no Paraview
+Clicar em Apply
+Clicar em 'View' - Table To Points
+Clicar no Olhinho ao lado de 'TableToPoints1'
+Selecionar a coluna dos dados em Coloring
