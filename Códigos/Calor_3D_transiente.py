@@ -1,27 +1,24 @@
 
-from Mesh_3D import mesh3d
-from Matrizes3D import matriz3D
-from pyevtk.hl import gridToVTK
 import meshio
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.sparse.linalg import cg
 from scipy.sparse import lil_matrix, csr_matrix, issparse
-from vtk.util import numpy_support
-import vtk
-import pandas as pd
+from Mesh_3D import mesh3d
+from Matrizes3D import matriz3D
+
 
 '''
 ##################################################################
 # 1) Input - Definicoes da simulacao
 ##################################################################
 '''
-Q = 0.0         # Geracao de calor
+Q = 0.0         # geracao de calor
 time = 0.0
 dt = 0.1        # time step
-nIter = 2       # Numero de iteracoes
-teta = 1        # Metodo dif. finitas - implicito = 1;
-#                                     - explicito = 0;
+nIter = 2       # numero de iteracoes
+teta = 1        # metodo dif. finitas - implicito      = 1;
+#                                     - explicito      = 0;
 #                                     - crank nicolson = 0.5.
 
 '''
@@ -32,7 +29,7 @@ teta = 1        # Metodo dif. finitas - implicito = 1;
 Lx = 1
 Ly = 1
 Lz = 2
-le = 0.1        # Tamanho medio do elemento
+le = 0.1        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
@@ -62,7 +59,7 @@ for elem in msh.cells:
     if elem[0] == 'triangle':
         IENbound.append(elem[1])
     elif elem[0] == 'tetra':     # elementos tetraedricos
-        IEN = elem[1]            # Matriz de conectivid IEN
+        IEN = elem[1]            # matriz de conectivide IEN
 ne = len(IEN)                    # numero de elementos
 
 print('Para verificacao da IEN, somar 1 nas tags dos nos')
@@ -182,5 +179,4 @@ df.to_excel(f'Temperaturas.xlsx',
             float_format="%.2f",
             index=False
             )
-
 df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)
