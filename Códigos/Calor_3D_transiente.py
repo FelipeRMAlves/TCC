@@ -45,26 +45,26 @@ malha = mesh3d(Lx, Ly, Lz, le, arquivo)
 # 2.2) Leitura das matrizes da malha
 ##############################################################################
 msh = meshio.read(arquivo)
-X = msh.points[:, 0]
-Y = msh.points[:, 1]
-Z = msh.points[:, 2]
-npoints = len(X)                 # numero de nos
+X = msh.points[:, 0]                # coordenada x dos nos
+Y = msh.points[:, 1]                # coordenada y dos nos
+Z = msh.points[:, 2]                # coordenada z dos nos
+npoints = len(X)                    # numero de nos
 
 
 ##############################################################################
 # 2.3) Matriz de conectividade (IEN) e de contorno
 ##############################################################################
-IENbound = []                    # nos do contorno
+IENbound = []                       # nos do contorno
 for elem in msh.cells:
     if elem[0] == 'triangle':
         IENbound.append(elem[1])
-    elif elem[0] == 'tetra':     # elementos tetraedricos
-        IEN = elem[1]            # matriz de conectivide IEN
-ne = len(IEN)                    # numero de elementos
+    elif elem[0] == 'tetra':        # elementos tetraedricos
+        IEN = elem[1]               # matriz de conectivide IEN
+ne = len(IEN)                       # numero de elementos
 
-print('Para verificacao da IEN, somar 1 nas tags dos nos')
-print('IEN \n', IEN)
-print('IENbound: \n', IENbound)
+# print('Para verificacao da IEN, somar 1 nas tags dos nos')
+# print('IEN \n', IEN)
+# print('IENbound: \n', IENbound)
 
 bound1 = []  # lista com os nos da primeira superficie das ccs
 for elem in IENbound[0]:
@@ -78,12 +78,12 @@ for elem in IENbound[0]:
 bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
     if b in bound1:
-        bval[b] = 1.5
+        bval[b] = 10.0
 # print('bval=',bval)
 
 
 ##############################################################################
-# 4) Assembling
+# 4) Assembling (matrizes K e M)
 ##############################################################################
 # LIL is a convenient format for constructing sparse matrices
 K = lil_matrix((npoints, npoints), dtype='double')
@@ -97,7 +97,6 @@ for e in range(0, ne):
 
     # importando matrizes do modulo Matrizes3D
     m = matriz3D(v1=v1, v2=v2, v3=v3, v4=v4, X=X, Y=Y, Z=Z)
-    volume = m.volCalc()
     melem = m.matrizm()
     kelem = m.matrizk()
 
@@ -108,14 +107,13 @@ for e in range(0, ne):
             K[iglobal, jglobal] = K[iglobal, jglobal] + kelem[ilocal, jlocal]
             M[iglobal, jglobal] = M[iglobal, jglobal] + melem[ilocal, jlocal]
 
-    print(f'{round(100*e/ne, 0)} % - calculando as matrizes...')
+    print(f'Assembling - {round(100*e/ne, 1)} % ...')
 
 
 ##############################################################################
 # 5) Montagem do sistema linear
 ##############################################################################
-# change to csr: efficient arithmetic operations as
-# CSR + CSR, CSR * CSR, etc.
+# change to csr: efficient arithmetic operations as CSR + CSR, CSR * CSR, etc.
 M = M.tocsr()
 K = K.tocsr()
 
@@ -135,24 +133,25 @@ T = np.zeros((npoints), dtype='double')     # Temperaturas
 ##############################################################################
 # 5.1) Imposicao das condicoes de contorno de Dirichlet
 ##############################################################################
-# deixar a matriz H simetrica (passa os valores para o outro lado)
+# deixar a matriz H simetrica (passa os valores para o outro lado da equacao)
 for i in bound1:
-    T[i] = bval[i]      # Temperatura de contorno
-    H[i, :] = 0.0       # zera a linha toda
-    H[:, i] = 0.0       # zera a coluna toda
-    H[i, i] = 1.0       # 1 na diagonal
+    T[i] = bval[i]                          # Temperatura de contorno
+    H[i, :] = 0.0                           # zera a linha toda
+    H[:, i] = 0.0                           # zera a coluna toda
+    H[i, i] = 1.0                           # 1 na diagonal
 print('H eh esparsa?', issparse(H))
 
 
 ##############################################################################
 # 6) Iteracoes no tempo
 ##############################################################################
-T_in = T            # Temperatura inicial
-T_time = [T_in]     # Lista de temperaturas por iteracao de tempo
+T_in = T                                    # Temperatura inicial
+T_time = [T_in]                             # Lista de temperaturas por
+#                                             iteracao de tempo
 
 for n in range(0, nIter):
     # lado direito da equacao
-    f = M.dot(T) - (1-teta)*dt*K.dot(T)   # + M*dt*Q
+    f = M.dot(T) - dt*(1-teta)*K.dot(T)   # + M*dt*Q
 
     # aplicar c.c. de Dirichlet no vetor f a cada iteração
     for i in bound1:
@@ -161,7 +160,7 @@ for n in range(0, nIter):
             f[j] = f[j] - H2[j, i]*bval[i]
 
     for i in bound1:
-        f[i] = bval[i]
+        f[i] = bval[i] # mantem os nos de contorno com a temperatura inicial
 
     # solucao do sistema linear
     T = cg(H, f)[0]
@@ -169,7 +168,7 @@ for n in range(0, nIter):
 
 
 ##############################################################################
-# 6) Salva resultados para visualizacao no Paraview
+# 7) Salva resultados para visualizacao no Paraview
 ##############################################################################
 header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3']
 df = pd.DataFrame([X, Y, Z, T_time[0], T_time[1], T_time[2]]).T
