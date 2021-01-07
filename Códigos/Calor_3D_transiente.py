@@ -178,3 +178,5 @@ df.to_excel(f'Temperaturas.xlsx',
             index=False
             )
 df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)
+
+print('done')
