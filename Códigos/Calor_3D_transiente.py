@@ -14,7 +14,6 @@ from Matrizes3D import matriz3D
 ##############################################################################
 '''
 Q = 0.0         # geracao de calor
-time = 0.0
 dt = 0.1        # time step
 nIter = 2       # numero de iteracoes
 teta = 1        # metodo dif. finitas - implicito      = 1;
