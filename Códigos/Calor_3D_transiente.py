@@ -151,7 +151,7 @@ T_time = [T_in]                             # Lista de temperaturas por
 
 for n in range(0, nIter):
     # lado direito da equacao
-    f = M.dot(T) - dt*(1-teta)*K.dot(T)   # + M*dt*Q
+    f = M.dot(T) # - dt*(1-teta)*K.dot(T)   # + M*dt*Q
 
     # aplicar c.c. de Dirichlet no vetor f a cada iteração
     for i in bound1:
