@@ -1,182 +1,181 @@
 
-
-from Mesh_2D import mesh2d
-from pyevtk.hl import gridToVTK
 import meshio
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.sparse.linalg import cg
-from scipy.sparse import lil_matrix
-from scipy.sparse import csr_matrix
-from mpl_toolkits.mplot3d import Axes3D
+from scipy.sparse import lil_matrix, csr_matrix, issparse
+from Mesh_3D import mesh3d
+from Matrizes3D import matriz3D
 
 
-# 1) Definicoes da simulacao
-alpha = 1
+'''
+##############################################################################
+# 1) Input - Definicoes da simulacao
+##############################################################################
+'''
+Q = 0.0         # geracao de calor
 time = 0.0
-dt = 0.1
-nIter = 50
+dt = 0.1        # time step
+nIter = 2       # numero de iteracoes
+teta = 1        # metodo dif. finitas - implicito      = 1;
+#                                     - explicito      = 0;
+#                                     - crank nicolson = 0.5.
 
-
-# 2) Importacao da malha (GMSH)
-filename = 'minha_malha'
+'''
+##############################################################################
+# 2) Input Malha
+##############################################################################
+'''
+Lx = 1
+Ly = 1
+Lz = 2
+le = 0.1        # tamanho medio do elemento
+nome_arquivo = 'minha_malha'
 formato = '.msh'
-msh = meshio.read(filename + formato)
-X = msh.points[:, 0]
-Y = msh.points[:, 1]
-Z = msh.points[:, 2]
-npoints = len(X)
 
-IEN = msh.cells[-1][1]   # msh.cells['tetra']
-ne = len(IEN)
-IENbound = []
+
+##############################################################################
+# 2.1) Malha gerada no API do GMSH
+##############################################################################
+arquivo = nome_arquivo + formato
+malha = mesh3d(Lx, Ly, Lz, le, arquivo)
+
+
+##############################################################################
+# 2.2) Leitura das matrizes da malha
+##############################################################################
+msh = meshio.read(arquivo)
+X = msh.points[:, 0]                # coordenada x dos nos
+Y = msh.points[:, 1]                # coordenada y dos nos
+Z = msh.points[:, 2]                # coordenada z dos nos
+npoints = len(X)                    # numero de nos
+
+
+##############################################################################
+# 2.3) Matriz de conectividade (IEN) e de contorno
+##############################################################################
+IENbound = []                       # nos do contorno
 for elem in msh.cells:
-    if elem[0] == 'line':
+    if elem[0] == 'triangle':
         IENbound.append(elem[1])
-print(IENbound)
-IENboundTypeElem = list(msh.cell_data['gmsh:physical'])
-boundNames = list(msh.field_data.keys())
+    elif elem[0] == 'tetra':        # elementos tetraedricos
+        IEN = elem[1]               # matriz de conectivide IEN
+ne = len(IEN)                       # numero de elementos
 
-IENboundElem = []
-for elem in IENboundTypeElem:
-    IENboundElem.append(boundNames[elem-1])
+# print('Para verificacao da IEN, somar 1 nas tags dos nos')
+# print('IEN \n', IEN)
+# print('IENbound: \n', IENbound)
 
-# cria lista de nos do contorno
-cc = np.unique(IENbound.reshape(IENbound.size))
-ccName = [[] for i in range(len(X))]
-for elem in range(0, len(IENbound)):
-    ccName[IENbound[elem][0]] = IENboundElem[elem]
-    ccName[IENbound[elem][1]] = IENboundElem[elem]
-
-# Consertando bug para malha do aerofolio
-if filename == 'airfoil_naca':
-    for i in range(6, 60):
-        ccName[i] = 'cylinder'
-
-#  2.1) Plot malha e pontos de contorno
-plt.triplot(X, Y, IEN, 'k-')
-plt.plot(X[cc], Y[cc], 'bo')
-plt.show()
+bound1 = []  # lista com os nos da primeira superficie das ccs
+for elem in IENbound[0]:
+    for no in elem:
+        bound1.append(no)
 
 
-
-# Paraview
-temp = np.random.rand(npoints).reshape((nx + 1, ny + 1, nx + 1)) 
-gridToVTK("./structured", X, X, Y, pointData = {"temp" : temp})
-
-
-
-# 2) Condicao de contorno
-bval = np.zeros((npoints), dtype='double')
-for b in range(nx):
-    bval[b] = X[b]
-for b in range(nx, (nx*(ny-1)+1), nx):
-    bval[b] = Y[b]
-for b in range((2*nx)-1, npoints, nx):
-    bval[b] = ((Y[b]) ** 2 + 1)
-for b in range(nx * (ny-1), npoints):
-    bval[b] = ((X[b]) ** 2 + 1)
+##############################################################################
+# 3) Condicao de contorno
+##############################################################################
+bval = np.zeros((npoints), dtype='float')
+for b in range(len(bval)):
+    if b in bound1:
+        bval[b] = 10.0
 # print('bval=',bval)
 
-# 3) Assembling
+
+##############################################################################
+# 4) Assembling (matrizes K e M)
+##############################################################################
 # LIL is a convenient format for constructing sparse matrices
 K = lil_matrix((npoints, npoints), dtype='double')
 M = lil_matrix((npoints, npoints), dtype='double')
 for e in range(0, ne):
     # construir as matrizes do elemento
-    v1 = IEN[e, 0]
-    v2 = IEN[e, 1]
-    v3 = IEN[e, 2]
-    v4 = IEN[e, 2] # fix this
+    v1 = IEN[e, 0]          # vertice 1
+    v2 = IEN[e, 1]          # vertice 2
+    v3 = IEN[e, 2]          # vertice 3
+    v4 = IEN[e, 3]          # vertice 4
 
-    from Matrizes2D import matriz2D
-    sq = matriz2D(v1=v1, v2=v2, v3=v3, v4=v4, X=malha.X, Y=malha.Y)
-    area = sq.areaCalc()
-    melem = sq.matrizm()
-    kelem = sq.matrizk()
+    # importando matrizes do modulo Matrizes3D
+    m = matriz3D(v1=v1, v2=v2, v3=v3, v4=v4, X=X, Y=Y, Z=Z)
+    melem = m.matrizm()
+    kelem = m.matrizk()
 
-    for ilocal in range(0, 3):
+    for ilocal in range(0, 4):
         iglobal = IEN[e, ilocal]
-        for jlocal in range(0, 3):
+        for jlocal in range(0, 4):
             jglobal = IEN[e, jlocal]
-
             K[iglobal, jglobal] = K[iglobal, jglobal] + kelem[ilocal, jlocal]
             M[iglobal, jglobal] = M[iglobal, jglobal] + melem[ilocal, jlocal]
 
-    print(f'{round(100*e/ne, 0)} % - calculando as matrizes...')
+    print(f'Assembling - {round(100*e/ne, 1)} % ...')
 
-# change to csr: efficient arithmetic operations CSR + CSR, CSR * CSR, etc.
+
+##############################################################################
+# 5) Montagem do sistema linear
+##############################################################################
+# change to csr: efficient arithmetic operations as CSR + CSR, CSR * CSR, etc.
 M = M.tocsr()
 K = K.tocsr()
 
-# lado direito do sistema linear eh fixo
-H = M + dt*alpha*K
+# lado esquerdo do sistema
+H = M + (teta)*dt*K
+H = H.tolil()
 
-print(type(H))
-print(type(M))
-print(type(K))
-
-# imposicao das condicoes de contorno de Dirichlet
-f = np.zeros((npoints), dtype='double')
-T = np.zeros((npoints), dtype='double')
-
-# save H into H2
+# salvar H em H2
 H2 = H.copy()
 H2 = H2.todense()
 
-# imposicao das condicoes de contorno de Dirichlet
-# deixando a matriz k simetrica (passa os valores para o outro lado)
-for i in bound:
-    H[i, :] = 0.0  # zera a linha toda
-    H[:, i] = 0.0
-    H[i, i] = 1.0
-    T[i] = bval[i]
+# criacao das listas das variaveis
+f = np.zeros((npoints), dtype='double')     # lado direito da eq
+T = np.zeros((npoints), dtype='double')     # Temperaturas
 
-# check if H is symmetric
-# def check_symmetric(a, tol=1e-8):
-#     return np.all(np.abs(a-a.T) < tol)
-# print(check_symmetric(H, tol=1e-8))
 
-# visualizacao da condicao inicial
-plotado = malha.plotSol(var=T)
-plt.show()
+##############################################################################
+# 5.1) Imposicao das condicoes de contorno de Dirichlet
+##############################################################################
+# deixar a matriz H simetrica (passa os valores para o outro lado da equacao)
+for i in bound1:
+    T[i] = bval[i]                          # Temperatura de contorno
+    H[i, :] = 0.0                           # zera a linha toda
+    H[:, i] = 0.0                           # zera a coluna toda
+    H[i, i] = 1.0                           # 1 na diagonal
+print('H eh esparsa?', issparse(H))
+
+
+##############################################################################
+# 6) Iteracoes no tempo
+##############################################################################
+T_in = T                                    # Temperatura inicial
+T_time = [T_in]                             # Lista de temperaturas por
+#                                             iteracao de tempo
 
 for n in range(0, nIter):
-    f = M * T
+    # lado direito da equacao
+    f = M.dot(T) # - dt*(1-teta)*K.dot(T)   # + M*dt*Q
 
     # aplicar c.c. de Dirichlet no vetor f a cada iteração
-    for i in bound:
+    for i in bound1:
         for j in range(npoints):
             # passa os valores para o outro lado da equacao
             f[j] = f[j] - H2[j, i]*bval[i]
 
-        # f[i] = bval[i]  ## PQ NAO FUNCIONA ???
-
-    for i in bound:
-        f[i] = bval[i]
+    for i in bound1:
+        f[i] = bval[i] # mantem os nos de contorno com a temperatura inicial
 
     # solucao do sistema linear
-    T = cg(H,f)[0]
-    # print('T=', T)
+    T = cg(H, f)[0]
+    T_time.append(T)
 
-    if lados == 3:
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        plot = ax.plot_trisurf(X, Y, T,cmap='jet')
-        ax.set_title(
-            "Temperatura em uma placa plana utilizando MEF (ºC)")
-        plt.pause(1)
 
-    elif lados == 4:
-        levels = 20
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_aspect('equal')
-        plot = ax.tricontourf(X, Y, T, levels, cmap='jet')
-        fig.colorbar(plot)
-        ax.set_title(
-            "Temperatura em uma placa plana utilizando MEF (ºC)") 
-        plt.pause(1)
+##############################################################################
+# 7) Salva resultados para visualizacao no Paraview
+##############################################################################
+header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3']
+df = pd.DataFrame([X, Y, Z, T_time[0], T_time[1], T_time[2]]).T
 
-    # plt.savefig(f'iteracao {n} triang.png')
-    
+df.to_excel(f'Temperaturas.xlsx',
+            header=header,
+            float_format="%.2f",
+            index=False
+            )
+df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)

@@ -11,7 +11,7 @@ class matriz3D():
         self.ci = (X[v3] - X[v4])*(Z[v2] - Z[v4]) - (X[v2] - X[v4])*(Z[v3] - Z[v4])
         self.cj = (X[v1] - X[v4])*(Z[v3] - Z[v4]) - (X[v3] - X[v4])*(Z[v1] - Z[v4])
         self.ck = (X[v2] - X[v4])*(Z[v1] - Z[v4]) - (X[v1] - X[v4])*(Z[v2] - Z[v4])
-        self.cl = -(self.Ci + self.cj + self.ck)
+        self.cl = -(self.ci + self.cj + self.ck)
 
         self.di = (X[v2] - X[v4])*(Y[v3] - Y[v4]) - (X[v3] - X[v4])*(Y[v2] - Y[v4])
         self.dj = (X[v3] - X[v4])*(Y[v1] - Y[v4]) - (X[v1] - X[v4])*(Y[v3] - Y[v4])
@@ -38,7 +38,6 @@ class matriz3D():
         import numpy as np
         # Para material isotropico (kx=ky=kz=k)
         k = 1.0
-        D = 
         
         B = (1.0/(6.0*self.vol))*np.array([[self.bi, self.bj, self.bk, self.bl],
                                            [self.ci, self.cj, self.ck, self.cl],

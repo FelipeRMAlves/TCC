@@ -1,0 +1,8 @@
+write VTK using python:
+https://vtk.org/Wiki/VTK/Writing_VTK_files_using_python
+
+GMSH:
+https://gmsh.info/doc/texinfo/gmsh.html#Namespace-gmsh_002fview
+
+Paraview:
+https://www.paraview.org/Wiki/ParaView/Data_formats
