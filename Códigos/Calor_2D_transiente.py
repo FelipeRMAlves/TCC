@@ -11,15 +11,14 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # 1) Definicoes da simulacao
 alpha = 1
-time = 0.0
 dt = 0.1
 nIter = 50
 
 # 2) Definicao da malha pelo usuario
-nx = 30
+nx = 10
 ny = 10
 Lx = 3
-Ly = 1
+Ly = 3
 lados = 4  # num de lados do elemento da malha
 
 # 2.1) Importacao da malha 
@@ -79,10 +78,11 @@ K = K.tocsr()
 
 # lado direito do sistema linear eh fixo
 H = M + dt*alpha*K
+H = H.tolil()
 
-print(type(H))
-print(type(M))
-print(type(K))
+# print(type(H))
+# print(type(M))
+# print(type(K))
 
 # imposicao das condicoes de contorno de Dirichlet
 f = np.zeros((npoints), dtype='double')

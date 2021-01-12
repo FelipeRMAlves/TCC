@@ -14,8 +14,8 @@ from Matrizes3D import matriz3D
 ##############################################################################
 '''
 Q = 0.0         # geracao de calor
-dt = 0.1        # time step
-nIter = 2       # numero de iteracoes
+dt = 0.1        # time step  AVALIAR AQUI, TESTES
+nIter = 3       # numero de iteracoes
 teta = 1        # metodo dif. finitas - implicito      = 1;
 #                                     - explicito      = 0;
 #                                     - crank nicolson = 0.5.
@@ -27,8 +27,8 @@ teta = 1        # metodo dif. finitas - implicito      = 1;
 '''
 Lx = 1
 Ly = 1
-Lz = 2
-le = 0.1        # tamanho medio do elemento
+Lz = 1
+le = 0.5        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
@@ -95,7 +95,7 @@ for e in range(0, ne):
     v4 = IEN[e, 3]          # vertice 4
 
     # importando matrizes do modulo Matrizes3D
-    m = matriz3D(v1=v1, v2=v2, v3=v3, v4=v4, X=X, Y=Y, Z=Z)
+    m = matriz3D(vi=v1, vj=v2, vk=v3, vl=v4, X=X, Y=Y, Z=Z)
     melem = m.matrizm()
     kelem = m.matrizk()
 
@@ -134,10 +134,10 @@ T = np.zeros((npoints), dtype='double')     # Temperaturas
 ##############################################################################
 # deixar a matriz H simetrica (passa os valores para o outro lado da equacao)
 for i in bound1:
-    T[i] = bval[i]                          # Temperatura de contorno
     H[i, :] = 0.0                           # zera a linha toda
     H[:, i] = 0.0                           # zera a coluna toda
     H[i, i] = 1.0                           # 1 na diagonal
+    T[i] = bval[i]                          # Temperatura de contorno
 print('H eh esparsa?', issparse(H))
 
 
@@ -149,8 +149,9 @@ T_time = [T_in]                             # Lista de temperaturas por
 #                                             iteracao de tempo
 
 for n in range(0, nIter):
+    print(f'{n} - {100*n/nIter}%')
     # lado direito da equacao
-    f = M.dot(T) # - dt*(1-teta)*K.dot(T)   # + M*dt*Q
+    f = M * T  # - dt*(1-teta)*K.dot(T)   # + M*dt*Q
 
     # aplicar c.c. de Dirichlet no vetor f a cada iteração
     for i in bound1:
@@ -159,7 +160,7 @@ for n in range(0, nIter):
             f[j] = f[j] - H2[j, i]*bval[i]
 
     for i in bound1:
-        f[i] = bval[i] # mantem os nos de contorno com a temperatura inicial
+        f[i] = bval[i]  # mantem os nos de contorno com a temperatura inicial
 
     # solucao do sistema linear
     T = cg(H, f)[0]
@@ -169,8 +170,8 @@ for n in range(0, nIter):
 ##############################################################################
 # 7) Salva resultados para visualizacao no Paraview
 ##############################################################################
-header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3']
-df = pd.DataFrame([X, Y, Z, T_time[0], T_time[1], T_time[2]]).T
+header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3', 'Tfinal']
+df = pd.DataFrame([X, Y, Z, T_time[0], T_time[1], T_time[2], T_time[-1]]).T
 
 df.to_excel(f'Temperaturas.xlsx',
             header=header,

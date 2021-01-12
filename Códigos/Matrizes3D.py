@@ -1,33 +1,34 @@
 
-class matriz3D():  
-    def __init__(self, X, Y, Z, v1, v2, v3, v4):
-        import numpy as np
+import numpy as np
 
-        self.bi = (Y[v2] - Y[v4])*(Z[v3] - Z[v4]) - (Y[v3] - Y[v4])*(Z[v2] - Z[v4])
-        self.bj = (Y[v3] - Y[v4])*(Z[v1] - Z[v4]) - (Y[v1] - Y[v4])*(Z[v3] - Z[v4])
-        self.bk = (Y[v1] - Y[v4])*(Z[v2] - Z[v4]) - (Y[v2] - Y[v4])*(Z[v1] - Z[v4])
+class matriz3D():  
+    
+    def __init__(self, X, Y, Z, vi, vj, vk, vl):
+
+        self.bi = (Y[vj] - Y[vl])*(Z[vk] - Z[vl]) - (Y[vk] - Y[vl])*(Z[vj] - Z[vl])
+        self.bj = (Y[vk] - Y[vl])*(Z[vi] - Z[vl]) - (Y[vi] - Y[vl])*(Z[vk] - Z[vl])
+        self.bk = (Y[vi] - Y[vl])*(Z[vj] - Z[vl]) - (Y[vj] - Y[vl])*(Z[vi] - Z[vl])
         self.bl = -(self.bi + self.bj + self.bk)
 
-        self.ci = (X[v3] - X[v4])*(Z[v2] - Z[v4]) - (X[v2] - X[v4])*(Z[v3] - Z[v4])
-        self.cj = (X[v1] - X[v4])*(Z[v3] - Z[v4]) - (X[v3] - X[v4])*(Z[v1] - Z[v4])
-        self.ck = (X[v2] - X[v4])*(Z[v1] - Z[v4]) - (X[v1] - X[v4])*(Z[v2] - Z[v4])
+        self.ci = (X[vk] - X[vl])*(Z[vj] - Z[vl]) - (X[vj] - X[vl])*(Z[vk] - Z[vl])
+        self.cj = (X[vi] - X[vl])*(Z[vk] - Z[vl]) - (X[vk] - X[vl])*(Z[vi] - Z[vl])
+        self.ck = (X[vj] - X[vl])*(Z[vi] - Z[vl]) - (X[vi] - X[vl])*(Z[vj] - Z[vl])
         self.cl = -(self.ci + self.cj + self.ck)
 
-        self.di = (X[v2] - X[v4])*(Y[v3] - Y[v4]) - (X[v3] - X[v4])*(Y[v2] - Y[v4])
-        self.dj = (X[v3] - X[v4])*(Y[v1] - Y[v4]) - (X[v1] - X[v4])*(Y[v3] - Y[v4])
-        self.dk = (X[v1] - X[v4])*(Y[v2] - Y[v4]) - (X[v2] - X[v4])*(Y[v1] - Y[v4])
+        self.di = (X[vj] - X[vl])*(Y[vk] - Y[vl]) - (X[vk] - X[vl])*(Y[vj] - Y[vl])
+        self.dj = (X[vk] - X[vl])*(Y[vi] - Y[vl]) - (X[vi] - X[vl])*(Y[vk] - Y[vl])
+        self.dk = (X[vi] - X[vl])*(Y[vj] - Y[vl]) - (X[vj] - X[vl])*(Y[vi] - Y[vl])
         self.dl = -(self.di + self.dj + self.dk)
 
 
-        self.vol = (1.0/6.0)*np.linalg.det(np.array([[1.0, X[v1], Y[v1], Z[v1]],
-                                                     [1.0, X[v2], Y[v2], Z[v2]],
-                                                     [1.0, X[v3], Y[v3], Z[v3]],
-                                                     [1.0, X[v4], Y[v4], Z[v4]]]))
+        self.vol = (1.0/6.0)*np.linalg.det(np.array([[1.0, X[vi], Y[vi], Z[vi]],
+                                                     [1.0, X[vj], Y[vj], Z[vj]],
+                                                     [1.0, X[vk], Y[vk], Z[vk]],
+                                                     [1.0, X[vl], Y[vl], Z[vl]]]))
     def volCalc(self):
         return self.vol
     
     def matrizm(self):
-        import numpy as np
         melem = (self.vol/20.0)*np.array([[2.0, 1.0, 1.0, 1.0],
                                           [1.0, 2.0, 1.0, 1.0],
                                           [1.0, 1.0, 2.0, 1.0],
@@ -35,7 +36,6 @@ class matriz3D():
         return melem
 
     def matrizk(self):
-        import numpy as np
         # Para material isotropico (kx=ky=kz=k)
         k = 1.0 # 51.1  # W/m.K - Aco SAE 1020
         

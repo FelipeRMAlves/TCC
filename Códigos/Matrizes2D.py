@@ -1,7 +1,9 @@
 
-class matriz2D():  
+import numpy as np 
+
+class matriz2D():
+    
     def __init__(self, X, Y, v1, v2, v3):
-        import numpy as np
 
         self.bi = Y[v2] - Y[v3]
         self.bj = Y[v3] - Y[v1]
@@ -17,14 +19,12 @@ class matriz2D():
         return self.area
     
     def matrizm(self):
-        import numpy as np
         melem = (self.area/12.0)*np.array([[2.0, 1.0, 1.0],
                                            [1.0, 2.0, 1.0],
                                            [1.0, 1.0, 2.0]])
         return melem
 
     def matrizk(self):
-        import numpy as np
         B = (1.0/(2.0*self.area))*np.array([[self.bi, self.bj, self.bk],
                                             [self.ci, self.cj, self.ck]])
         BT = np.transpose(B)
