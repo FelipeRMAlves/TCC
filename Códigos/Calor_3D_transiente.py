@@ -2,7 +2,7 @@
 import meshio
 import numpy as np
 import pandas as pd
-from scipy.sparse.linalg import cg
+from scipy.sparse.linalg import cg, spsolve
 from scipy.sparse import lil_matrix, csr_matrix, issparse
 from Mesh_3D import mesh3d
 from Matrizes3D import matriz3D
@@ -14,10 +14,10 @@ from Matrizes3D import matriz3D
 ##############################################################################
 '''
 Q = 0.0         # geracao de calor
-dt = 0.1        # time step  AVALIAR AQUI, TESTES
-nIter = 3       # numero de iteracoes
-teta = 1        # metodo dif. finitas - implicito      = 1;
-#                                     - explicito      = 0;
+dt = 0.01       # time step
+nIter = 360     # numero de iteracoes
+teta = 1.0      # metodo dif. finitas - implicito      = 1.0;
+#                                     - explicito      = 0.0;
 #                                     - crank nicolson = 0.5.
 
 '''
@@ -27,8 +27,8 @@ teta = 1        # metodo dif. finitas - implicito      = 1;
 '''
 Lx = 1
 Ly = 1
-Lz = 1
-le = 0.5        # tamanho medio do elemento
+Lz = 2
+le = 0.1        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
@@ -70,6 +70,12 @@ for elem in IENbound[0]:
     for no in elem:
         bound1.append(no)
 
+bound2 = []  # lista com os nos da segunda superficie das ccs
+for elem in IENbound[5]:
+    for no in elem:
+        bound2.append(no)
+
+bound = bound1 + bound2
 
 ##############################################################################
 # 3) Condicao de contorno
@@ -77,7 +83,9 @@ for elem in IENbound[0]:
 bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
     if b in bound1:
-        bval[b] = 10.0
+        bval[b] = 100.0
+    elif b in bound2:
+        bval[b] = 0.0
 # print('bval=',bval)
 
 
@@ -124,6 +132,7 @@ H = H.tolil()
 H2 = H.copy()
 H2 = H2.todense()
 
+
 # criacao das listas das variaveis
 f = np.zeros((npoints), dtype='double')     # lado direito da eq
 T = np.zeros((npoints), dtype='double')     # Temperaturas
@@ -133,7 +142,7 @@ T = np.zeros((npoints), dtype='double')     # Temperaturas
 # 5.1) Imposicao das condicoes de contorno de Dirichlet
 ##############################################################################
 # deixar a matriz H simetrica (passa os valores para o outro lado da equacao)
-for i in bound1:
+for i in bound:
     H[i, :] = 0.0                           # zera a linha toda
     H[:, i] = 0.0                           # zera a coluna toda
     H[i, i] = 1.0                           # 1 na diagonal
@@ -149,21 +158,21 @@ T_time = [T_in]                             # Lista de temperaturas por
 #                                             iteracao de tempo
 
 for n in range(0, nIter):
-    print(f'{n} - {100*n/nIter}%')
+    print(f'{n} - {round(100*n/nIter,2)}%')
     # lado direito da equacao
-    f = M * T  # - dt*(1-teta)*K.dot(T)   # + M*dt*Q
+    f = M.dot(T) - dt*(1-teta)*K.dot(T)   # + M*dt*Q
 
-    # aplicar c.c. de Dirichlet no vetor f a cada iteração
-    for i in bound1:
-        for j in range(npoints):
-            # passa os valores para o outro lado da equacao
-            f[j] = f[j] - H2[j, i]*bval[i]
+    # # aplicar c.c. de Dirichlet no vetor f a cada iteração
+    # for i in bound:
+    #     for j in range(npoints):
+    #         # passa os valores para o outro lado da equacao
+    #         f[j] = f[j] - H2[j, i]*bval[i]
 
-    for i in bound1:
+    for i in bound:
         f[i] = bval[i]  # mantem os nos de contorno com a temperatura inicial
 
     # solucao do sistema linear
-    T = cg(H, f)[0]
+    T = spsolve(H.tocsc(), f) # cg(H, f)[0]
     T_time.append(T)
 
 

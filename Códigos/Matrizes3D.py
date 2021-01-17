@@ -2,7 +2,7 @@
 import numpy as np
 
 class matriz3D():  
-    
+
     def __init__(self, X, Y, Z, vi, vj, vk, vl):
 
         self.bi = (Y[vj] - Y[vl])*(Z[vk] - Z[vl]) - (Y[vk] - Y[vl])*(Z[vj] - Z[vl])

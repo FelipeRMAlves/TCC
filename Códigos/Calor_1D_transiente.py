@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 Ti = 0.0
 Tf = 1.0
 alpha = 1.0
-Q = 5.0
+Q = 0.0
 dt = 0.1
 time = 0.0
 grau = 3  # tipo de elemento(linear=1, quadratico=2, cubico=3)
@@ -72,15 +72,15 @@ for e in range(0, nelem):
 
 #  6) contrucao do sistema linear e aplicacao das c.cs:
 T = np.zeros((npoints, 1), dtype='float')
-T[0] = Ti
+# T[0] = Ti
 T[-1] = Tf
 
 # matriz do lado esquerdo
 H = M + (teta) * dt*K   
 
-# noh 0
-H[0,:] = 0.0
-H[0,0] = 1.0
+# # noh 0
+# H[0,:] = 0.0
+# H[0,0] = 1.0
 # ultimo noh
 H[-1,:] = 0.0
 H[-1,-1] = 1.0
@@ -92,8 +92,8 @@ for n in range(0,10):
     b = np.dot(M,T) - (1 - teta) * dt*np.dot(K,T) + dt*F 
     # b = np.dot(M, T) + dt*F
 
-    # noh 0
-    b[0] = Ti
+    # # noh 0
+    # b[0] = Ti
     # ultimo noh
     b[-1] = Tf
 
@@ -104,7 +104,7 @@ for n in range(0,10):
     plt.plot(X, Tan, 'b-')
     plt.plot(X, T, 'r.-')
     plt.pause(dt)
-    plt.savefig(f'step {n} cubico')
+    # plt.savefig(f'step {n} cubico')
     plt.clf()
     # print(n * dt)
  
