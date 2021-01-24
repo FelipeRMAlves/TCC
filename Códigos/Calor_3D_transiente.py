@@ -13,12 +13,12 @@ from Matrizes3D import matriz3D
 # 1) Input - Definicoes da simulacao
 ##############################################################################
 '''
-Q = 0.0         # geracao de calor
-dt = 0.01       # time step
-nIter = 360     # numero de iteracoes
-teta = 1.0      # metodo dif. finitas - implicito      = 1.0;
-#                                     - explicito      = 0.0;
-#                                     - crank nicolson = 0.5.
+Q = 0.0           # geracao de calor
+dt = 0.0001       # time step
+nIter = 100000    # numero de iteracoes
+teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
+#                                       - explicito      = 0.0;
+#                                       - crank nicolson = 0.5.
 
 '''
 ##############################################################################
@@ -27,7 +27,7 @@ teta = 1.0      # metodo dif. finitas - implicito      = 1.0;
 '''
 Lx = 1
 Ly = 1
-Lz = 2
+Lz = 1
 le = 0.1        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
@@ -71,9 +71,9 @@ for elem in IENbound[0]:
         bound1.append(no)
 
 bound2 = []  # lista com os nos da segunda superficie das ccs
-for elem in IENbound[5]:
-    for no in elem:
-        bound2.append(no)
+# for elem in IENbound[5]:
+#     for no in elem:
+#         bound2.append(no)
 
 bound = bound1 + bound2
 
@@ -83,9 +83,9 @@ bound = bound1 + bound2
 bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
     if b in bound1:
-        bval[b] = 100.0
-    elif b in bound2:
-        bval[b] = 0.0
+        bval[b] = 10.0
+    # elif b in bound2:
+    #     bval[b] = 0.0
 # print('bval=',bval)
 
 
@@ -121,6 +121,9 @@ for e in range(0, ne):
 # 5) Montagem do sistema linear
 ##############################################################################
 # change to csr: efficient arithmetic operations as CSR + CSR, CSR * CSR, etc.
+rho = 7870  # kg/m^3
+cv = 486  # J/kg.K
+M = rho*cv*M
 M = M.tocsr()
 K = K.tocsr()
 
@@ -180,7 +183,7 @@ for n in range(0, nIter):
 # 7) Salva resultados para visualizacao no Paraview
 ##############################################################################
 header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3', 'Tfinal']
-df = pd.DataFrame([X, Y, Z, T_time[0], T_time[1], T_time[2], T_time[-1]]).T
+df = pd.DataFrame([X, Y, Z, T_time[0], T_time[100], T_time[200], T_time[-1]]).T
 
 df.to_excel(f'Temperaturas.xlsx',
             header=header,
