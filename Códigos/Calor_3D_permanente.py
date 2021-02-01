@@ -13,14 +13,7 @@ from Matrizes3D import matriz3D
 # 1) Input - Definicoes da simulacao
 ##############################################################################
 '''
-rho = 1           # kg/m^3
-cv = 1            # J/kg.K
-Q = 0.0           # geracao de calor
-dt = 0.01         # time step
-nIter = 100       # numero de iteracoes
-teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
-#                                       - explicito      = 0.0;
-#                                       - crank nicolson = 0.5.
+
 
 '''
 ##############################################################################
@@ -29,7 +22,7 @@ teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 '''
 Lx = 1
 Ly = 1
-Lz = 2
+Lz = 1
 le = 0.1        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
@@ -62,6 +55,7 @@ for elem in msh.cells:
     elif elem[0] == 'tetra':        # elementos tetraedricos
         IEN = elem[1]               # matriz de conectivide IEN
 ne = len(IEN)                       # numero de elementos
+
 # print('Para verificacao da IEN, somar 1 nas tags dos nos')
 # print('IEN \n', IEN)
 # print('IENbound: \n', IENbound)
@@ -78,7 +72,6 @@ for elem in IENbound[5]:
 
 bound = bound1 + bound2
 
-
 ##############################################################################
 # 3) Condicao de contorno
 ##############################################################################
@@ -88,7 +81,7 @@ for b in range(len(bval)):
         bval[b] = 100.0
     elif b in bound2:
         bval[b] = 0.0
-# print('bval=',bval)
+print('bval=',bval)
 
 
 ##############################################################################
@@ -119,88 +112,45 @@ for e in range(0, ne):
     print(f'Assembling - {round(100*e/ne, 1)} % ...')
 
 
-##############################################################################
-# 5) Montagem do sistema linear
-##############################################################################
-# change to csr: efficient arithmetic operations as CSR + CSR, CSR * CSR, etc.
-M = M.tocsr()
-K = K.tocsr()
-
-# lado esquerdo do sistema
-H = rho*cv*M + (teta)*dt*K
-
-# salvar H em H2
-H2 = H.copy()
-H2 = H2.todense()
-
-H = H.tolil()
-
-# criacao das listas das variaveis
-f = np.zeros((npoints), dtype='double')     # lado direito da eq
-T = np.zeros((npoints), dtype='double')     # Temperaturas
-
 
 ##############################################################################
-# 5.1) Imposicao das condicoes de contorno de Dirichlet
+# 5) Imposicao das condicoes de contorno de Dirichlet
 ##############################################################################
-# deixar a matriz H simetrica (passa os valores para o outro lado da equacao)
+# deixando a matriz k simetrica (passa os valores para o outro lado)
+f = np.zeros((npoints), dtype='double')
 for i in bound:
-    H[i, :] = 0.0                           # zera a linha toda
-    # for j in range(npoints):
-    #     # passa os valores para o outro lado da equacao
-    #     f[j] = f[j] - H2[j, i]*bval[i]
-    # H[:, i] = 0.0                           # zera a coluna toda  # NÃO
-    #                                         SÓ POSSO ZERAR A COLUNA SE PASSAR TUDO PO OUTRO LADO
-    #                                         SÓ PASSO PRO OUTRO LADO SE ZERAR COLUNA
-    H[i, i] = 1.0                           # 1 na diagonal
-    T[i] = bval[i]                          # Temperatura de contorno
-print('H eh esparsa?', issparse(H))
+    K[i, :] = 0.0  # zera a linha toda
+    f[i] = bval[i]
+    for j in range(npoints):
+        # passa os valores para o outro lado da equacao
+        f[j] = f[j] - K[j, i]*bval[i]
+    K[:, i] = 0.0
+    K[i, i] = 1.0
 
 
 ##############################################################################
-# 6) Iteracoes no tempo
+# 6) solucao do sistema linear
 ##############################################################################
-T_in = T                                    # Temperatura inicial
-T_time = [T_in]                             # Lista de temperaturas por
-#                                             iteracao de tempo
+T = spsolve(K, f)
+print('T=',T)
 
-for n in range(0, nIter):
-    print(f'{n} - {round(100*n/nIter,2)}%')
-    # lado direito da equacao
-    f = rho*cv*M.dot(T) - dt*(1-teta)*K.dot(T)  # + M*dt*Q
 
-    # # aplicar c.c. de Dirichlet no vetor f a cada iteração
-    # for i in bound:
-    #     for j in range(npoints):
-    #         # passa os valores para o outro lado da equacao
-    #         f[j] = f[j] - H2[j, i]*bval[i]
+# ##############################################################################
+# # 7) Salva resultados para visualizacao no Paraview
+# ##############################################################################
+# header = ['X', 'Y', 'Z', 'T']
+# df = pd.DataFrame([X, Y, Z, T]).T
 
-    for i in bound:
-        f[i] = bval[i]  # mantem os nos de contorno com a temperatura inicial
+# df.to_excel(f'Temperaturas_permanente.xlsx',
+#             header=header,
+#             float_format="%.2f",
+#             index=False
+#             )
+# df.to_csv('Temperaturas_permanente_csv.csv', encoding='utf-8', index=False)
 
-    # solucao do sistema linear
-    T = spsolve(H.tocsc(), f) # cg(H, f)[0] cg apenas zerando coluna:
-                                                #simetrica positiva definida.
-    T_time.append(T)
+# print('done')
 
-    point_data = {'temp' : T}
-    meshio.write_points_cells(f'sol-{n}.vtk',msh.points,
+
+point_data = {'temp' : T}
+meshio.write_points_cells('sol.vtk',msh.points,
                             msh.cells,point_data=point_data,)
-
-
-##############################################################################
-# 7) Salva resultados para visualizacao no Paraview
-##############################################################################
-header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3', 'Tfinal']
-df = pd.DataFrame([X, Y, Z, T_time[0], T_time[10], T_time[20], T_time[-1]]).T
-
-df.to_excel(f'Temperaturas.xlsx',
-            header=header,
-            float_format="%.2f",
-            index=False
-            )
-df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)
-
-print('done')
-
-
