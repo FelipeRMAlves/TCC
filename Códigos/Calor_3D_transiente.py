@@ -1,6 +1,7 @@
 
 import meshio
 import numpy as np
+from numpy import pi, sin, cos, sinh
 import pandas as pd
 from scipy.sparse.linalg import cg, spsolve
 from scipy.sparse import lil_matrix, csr_matrix, issparse
@@ -186,6 +187,15 @@ for n in range(0, nIter):
     point_data = {'temp' : T}
     meshio.write_points_cells(f'sol-{n}.vtk',msh.points,
                             msh.cells,point_data=point_data,)
+
+
+##############################################################################
+# 6) Solucao analitica (2D permanente)
+##############################################################################
+
+for p in npoints:
+    T_an = (2/pi) * ((-1)**(p+1) + 1)/p * sin((p*pi*X[p])/Lx)) * sinh((p*pi*Y[p])/Lx) / sinh((p*pi*Ly)/Lx)
+
 
 
 ##############################################################################
