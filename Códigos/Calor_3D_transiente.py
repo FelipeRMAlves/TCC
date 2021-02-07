@@ -13,11 +13,11 @@ from Matrizes3D import matriz3D
 # 1) Input - Definicoes da simulacao
 ##############################################################################
 '''
-rho = 1           # kg/m^3
-cv = 1            # J/kg.K
+rho = 7870        # 7870 kg/m^3
+cv = 486          # 486 J/kg.K
 Q = 0.0           # geracao de calor
-dt = 0.01         # time step
-nIter = 100       # numero de iteracoes
+dt = 0.1          # time step
+nIter = 1250      # numero de iteracoes
 teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 #                                       - explicito      = 0.0;
 #                                       - crank nicolson = 0.5.
@@ -27,10 +27,10 @@ teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 # 2) Input Malha
 ##############################################################################
 '''
-Lx = 1
-Ly = 1
-Lz = 2
-le = 0.1        # tamanho medio do elemento
+Lx = 0.10
+Ly = 0.10
+Lz = 0.1
+le = 0.005        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
