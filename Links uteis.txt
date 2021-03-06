@@ -6,3 +6,6 @@ https://gmsh.info/doc/texinfo/gmsh.html#Namespace-gmsh_002fview
 
 Paraview:
 https://www.paraview.org/Wiki/ParaView/Data_formats
+
+Analytical solution 2D
+https://www.youtube.com/watch?v=lY2QVs7aFMY

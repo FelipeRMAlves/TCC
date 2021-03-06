@@ -2,6 +2,7 @@
 import meshio
 import numpy as np
 from numpy import pi, sin, cos, sinh
+import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.sparse.linalg import cg, spsolve
 from scipy.sparse import lil_matrix, csr_matrix, issparse
@@ -14,24 +15,26 @@ from Matrizes3D import matriz3D
 # 1) Input - Definicoes da simulacao
 ##############################################################################
 '''
-rho = 7870        # 7870 kg/m^3
-cv = 486          # 486 J/kg.K
+rho = 1        # 7870 kg/m^3
+cv = 1          # 486 J/kg.K
 Q = 0.0           # geracao de calor
 dt = 0.1          # time step
-nIter = 1250      # numero de iteracoes
+nIter = 50      # numero de iteracoes
 teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 #                                       - explicito      = 0.0;
 #                                       - crank nicolson = 0.5.
+T1 = 100.0
+T2 = 10.0
 
 '''
 ##############################################################################
 # 2) Input Malha
 ##############################################################################
 '''
-Lx = 0.10
-Ly = 0.10
-Lz = 0.1
-le = 0.005        # tamanho medio do elemento
+Lx = 1
+Ly = 1
+Lz = 0.05
+le = 0.01        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
@@ -40,7 +43,7 @@ formato = '.msh'
 # 2.1) Malha gerada no API do GMSH
 ##############################################################################
 arquivo = nome_arquivo + formato
-malha = mesh3d(Lx, Ly, Lz, le, arquivo)
+# malha = mesh3d(Lx, Ly, Lz, le, arquivo)
 
 
 ##############################################################################
@@ -67,17 +70,45 @@ ne = len(IEN)                       # numero de elementos
 # print('IEN \n', IEN)
 # print('IENbound: \n', IENbound)
 
-bound1 = []  # lista com os nos da primeira superficie das ccs
-for elem in IENbound[0]:
-    for no in elem:
-        bound1.append(no)
 
-bound2 = []  # lista com os nos da segunda superficie das ccs
+'''
+planos de contorno
+IENbound[4] -> Plano x=0 (bound1)
+IENbound[2] -> Plano x=1 (bound2)
+IENbound[1] -> Plano y=0 (bound3)
+IENbound[3] -> Plano y=1 (bound4)
+'''
+bound1 = []  # lista com os nos do Plano x=0
+for elem in IENbound[4]:
+    for no in elem:
+        if no not in bound1:
+            bound1.append(no)
+
+bound2 = []  # lista com os nos do Plano x=1
+for elem in IENbound[2]:
+    for no in elem:
+        if no not in bound2:
+            bound2.append(no)
+
+bound3 = []  # lista com os nos do Plano y=0 
+for elem in IENbound[1]:
+    for no in elem:
+        if no not in bound3:
+            bound3.append(no)
+
+bound4 = []  # lista com os nos do Plano y=1
+for elem in IENbound[3]:
+    for no in elem:
+        if no not in bound4:
+            bound4.append(no)
+
+bound5 = []  # lista com os nos do Plano z=1(ou 0)
 for elem in IENbound[5]:
     for no in elem:
-        bound2.append(no)
+        if no not in bound5:
+            bound5.append(no)
 
-bound = bound1 + bound2
+bound = bound1 + bound2 + bound3 + bound4
 
 
 ##############################################################################
@@ -85,11 +116,10 @@ bound = bound1 + bound2
 ##############################################################################
 bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
-    if b in bound1:
-        bval[b] = 100.0
-    elif b in bound2:
-        bval[b] = 0.0
-# print('bval=',bval)
+    if b in bound1 or b in bound2 or b in bound3:
+        bval[b] = T1
+    elif b in bound4:
+        bval[b] = T2
 
 
 ##############################################################################
@@ -130,9 +160,9 @@ K = K.tocsr()
 # lado esquerdo do sistema
 H = rho*cv*M + (teta)*dt*K
 
-# salvar H em H2
-H2 = H.copy()
-H2 = H2.todense()
+# # salvar H em H2
+# H2 = H.copy()
+# H2 = H2.todense()
 
 H = H.tolil()
 
@@ -190,19 +220,74 @@ for n in range(0, nIter):
 
 
 ##############################################################################
-# 6) Solucao analitica (2D permanente)
+# 7) Solucao analitica (2D permanente)
 ##############################################################################
+somat_xy = np.zeros((len(bound5)), dtype='double')
+T_an = np.zeros((len(bound5)), dtype='double')
+for i in range(1, 200):
+    X2D = []
+    Y2D = []
+    indx = 0
+    for p in bound5:
+        s = ((((-1)**(i+1) + 1)/i) * sin((i*pi*X[p])/Lx) * (sinh((i*pi*Y[p])/Lx) / sinh((i*pi*Ly)/Lx)))
+        somat_xy[indx] = somat_xy[indx] + s       # Somatorio
+        X2D.append(X[p])                          # Coord X do plano
+        Y2D.append(Y[p])                          # Coord Y do plano
+        indx += 1
 
-for p in npoints:
-    T_an = (2/pi) * ((-1)**(p+1) + 1)/p * sin((p*pi*X[p])/Lx)) * sinh((p*pi*Y[p])/Lx) / sinh((p*pi*Ly)/Lx)
+T_an = T1 + ((2*(T2-T1)/pi) * somat_xy)           # Temperatura analitica
 
+
+# ##############################################################################
+# # 7.1) Plot da solucao analitica
+# ##############################################################################
+# levels = 100
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.set_aspect('equal')
+# plot = ax.tricontourf(X2D, Y2D, T_an, levels, cmap='jet')
+# fig.colorbar(plot)
+# ax.set_title(
+#     "Temperatura analitica 2D (ºC)") 
+# # plt.close(1)
+# plt.savefig('solucao_analitica.png')
 
 
 ##############################################################################
-# 7) Salva resultados para visualizacao no Paraview
+# 7.2) Plot da comparacao entre analitico e numerico
 ##############################################################################
-header = ['X', 'Y', 'Z', 'T1', 'T2', 'T3', 'Tfinal']
-df = pd.DataFrame([X, Y, Z, T_time[0], T_time[10], T_time[20], T_time[-1]]).T
+Y_meio = []
+T_an_meio = []
+for t in range(len(T_an)):
+    if X2D[t] > 0.79 and X2D[t] < 0.81:
+        Y_meio.append(Y2D[t])
+        T_an_meio.append(T_an[t])
+
+
+T_cont = []  # Temp final na bound5 para comparacao com sol analitica
+T_num_meio = []  # Temp numerica no x=0.75
+for i in bound5:
+    T_cont.append(T[i])
+    if X[i] > 0.79 and X[i] < 0.81:
+        T_num_meio.append(T[i])
+
+
+plt.plot(Y_meio, T_an_meio, 'rx', label='Solução Analítica')
+plt.plot(Y_meio, T_num_meio, 'bo', label='Solução Numérica', 
+                                linewidth=2.2,markersize=2.3)
+ax = plt.axes()
+ax.set_xlabel(r'Y [m]', fontsize=14)
+ax.set_ylabel(r'T [ºC]', fontsize=14)
+plt.legend()
+plt.title(f'Temperatura em X = 0.75', fontsize=16)
+plt.show()
+
+
+##############################################################################
+# 8) Salva resultados para visualizacao no Paraview
+##############################################################################
+header = ['X', 'Y', 'T Final', 'T Analitica']
+df = pd.DataFrame([X2D, Y2D, T_cont, T_an]).T
 
 df.to_excel(f'Temperaturas.xlsx',
             header=header,
