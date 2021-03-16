@@ -13,11 +13,11 @@ from Matrizes3D import matriz3D
 # 1) Input - Definicoes da simulacao
 ##############################################################################
 '''
-rho = 7870        # 7870 kg/m^3
-cv = 486          # 486 J/kg.K
+rho = 7850        # 7870 kg/m^3
+cv = 434          # 486 J/kg.K
 Q = 0.0           # geracao de calor
 dt = 0.1          # time step
-nIter = 1250      # numero de iteracoes
+nIter = 500      # numero de iteracoes
 teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 #                                       - explicito      = 0.0;
 #                                       - crank nicolson = 0.5.
@@ -27,8 +27,8 @@ teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 # 2) Input Malha
 ##############################################################################
 '''
-Lx = 0.10
-Ly = 0.10
+Lx = 0.1
+Ly = 0.1
 Lz = 0.1
 le = 0.005        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
@@ -85,7 +85,7 @@ bound = bound1 + bound2
 bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
     if b in bound1:
-        bval[b] = 100.0
+        bval[b] = 10.0
     elif b in bound2:
         bval[b] = 0.0
 # print('bval=',bval)

@@ -37,7 +37,7 @@ class matriz3D():
 
     def matrizk(self):
         # Para material isotropico (kx=ky=kz=k)
-        k = 51.0  # W/m.K - Aco SAE 1020
+        k = 60.5  # W/m.K - Aco SAE 1020
         
         B = (1.0/(6.0*self.vol))*np.array([[self.bi, self.bj, self.bk, self.bl],
                                            [self.ci, self.cj, self.ck, self.cl],
