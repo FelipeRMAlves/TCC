@@ -17,8 +17,8 @@ rho = 7850        # 7870 kg/m^3
 cv = 434          # 486 J/kg.K
 Q = 0.0           # geracao de calor
 dt = 0.1          # time step
-nIter = 3000      # numero de iteracoes
-teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
+nIter = 1500      # numero de iteracoes
+teta = 0.5        # metodo dif. finitas - implicito      = 1.0;
 #                                       - explicito      = 0.0;
 #                                       - crank nicolson = 0.5.
 
@@ -30,7 +30,7 @@ teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 Lx = 0.1
 Ly = 0.1
 Lz = 0.1
-le = 0.005        # tamanho medio do elemento
+le = 0.0042        # tamanho medio do elemento
 nome_arquivo = 'minha_malha'
 formato = '.msh'
 
@@ -39,7 +39,7 @@ formato = '.msh'
 # 2.1) Malha gerada no API do GMSH
 ##############################################################################
 arquivo = nome_arquivo + formato
-# malha = mesh3d(Lx, Ly, Lz, le, arquivo)
+malha = mesh3d(Lx, Ly, Lz, le, arquivo)
 
 
 ##############################################################################
@@ -187,28 +187,25 @@ for n in range(0, nIter):
     meshio.write_points_cells(f'sol-{n}.vtk',msh.points,
                             msh.cells,point_data=point_data,)
 
-
+print(T_time)
 ##############################################################################
 # 7) Salva resultados para visualizacao no Paraview
 ##############################################################################
 header = ['X', 'Y', 'Z', 'T_in', 'T10s', 'T20s', 'T30s', 'T40s', 'T50s',
           'T75s', 'T100s', 'T150s', 'T200s', 'T250s', 'T300s']
-df = pd.DataFrame([X, Y, Z, T_time[0], T_time[99], T_time[199], T_time[299], 
-                    T_time[399], T_time[499], T_time[749], 
-                    T_time[999], T_time[1499], T_time[1999], T_time[2499], 
+df = pd.DataFrame([1000*X, 1000*Y, 1000*Z, T_time[0], T_time[100], T_time[200], T_time[300], 
+                    T_time[400], T_time[500], T_time[750], 
+                    T_time[1000], T_time[1500], T_time[2000], T_time[2500], 
                     T_time[-1]]).T
 
-# header = ['X', 'Y', 'Z', 'T_in', 'T10s', 'T20s', 'T30s', 'T40s', 'T50s',
-#           'T75s', 'T100s']
-# df = pd.DataFrame([X, Y, Z, T_time[0], T_time[99], T_time[199], T_time[299], 
-#                     T_time[399], T_time[499], T_time[749], T_time[-1]]).T
 
-df.to_excel(f'Temperaturas.xlsx',
+df.to_excel(f'Temp_cranck-nic.xlsx',
             header=header,
-            float_format="%.2f",
+            float_format="%.6f",
             index=False
             )
-df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)
+
+# df.to_csv('Temperaturas_csv.csv', encoding='utf-8', index=False)
 
 print('done')
 
