@@ -82,6 +82,6 @@ class mesh3d():
         gmsh.model.mesh.generate(3)  # 3D
 
         # Salvar arquivo .msh
-        gmsh.write("minha_malha.msh")
+        gmsh.write(filename)
         # gmsh.option.setNumber("Mesh.SaveAll", 1)
         gmsh.finalize()
