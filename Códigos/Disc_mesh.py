@@ -1,87 +1,53 @@
 
 
-class disc():
+# class disc():
 
-    def __init__(self, Lx, Ly, Lz, le, filename):
-        # le = tamanho medio do elemento
-        import numpy as np
-        import gmsh
+#     def __init__(self, Lx, Ly, Lz, le, filename):
+#         # le = tamanho medio do elemento
+#         import numpy as np
+#         import gmsh
 
-        # Before using any functions in the Python API, Gmsh must be initialized:
-        gmsh.initialize()
 
-        # in order to output messages on the terminal, just set the 
-        # "General.Terminal" option to 1:
-        gmsh.option.setNumber("General.Terminal", 1)
+import gmsh
+import numpy as np
 
-        # iniciando a malha
-        gmsh.model.add("minha_malha")
 
-        # pontos:
-        # gmsh.model.geo.addPoint(x, y, z, target mesh size, tag)
-        gmsh.model.geo.addPoint(0, 0, 0, le, 1)
-        gmsh.model.geo.addPoint(Lx, 0, 0, le, 2)
-        gmsh.model.geo.addPoint(Lx, Ly, 0, le, 3)
-        gmsh.model.geo.addPoint(0, Ly, 0, le, 4)
 
-        # linhas:
-        # gmsh.model.geo.addLine(ponto inicial, ponto final, tag)
-        gmsh.model.geo.addLine(1, 2, 1)
-        gmsh.model.geo.addLine(2, 3, 2)
-        gmsh.model.geo.addLine(3, 4, 3)
-        gmsh.model.geo.addLine(4, 1, 4)
+'''
+##############################################################################
+# 1) Input - Definicoes da simulacao
+##############################################################################
+'''
+re = 0.015        # raio externo [m]
+ri = 0.005        # raio interno [m]
+e = 0.005          # espessura [m]
 
-        # superficies:
-        gmsh.model.geo.addCurveLoop([1, 2, 3, 4], 1)
-        gmsh.model.geo.addPlaneSurface([1], 1)
 
-        # physical group
-        ps = gmsh.model.addPhysicalGroup(2, [1], 6)
-        gmsh.model.setPhysicalName(2, ps, "My surface")
+##############################################################################
+# Codigo
+##############################################################################
+gmsh.initialize()
+gmsh.model.add("DFG 3D")
 
-        # extrudar:
-        # e = gmsh.model.geo.extrude([(dim, tag)], 0, 0, h)
-        h = Lz  # geometry height in the z-direction
-        e = gmsh.model.geo.extrude([(2, 1)], 0, 0, h)
+# addCylinder(x,y,z)
+cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, e, 0, re, tag = 1)
+cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, e, 0, ri, tag = 2)
+gmsh.model.occ.cut([(3, 3)], [(3, 7)], 8)
 
-        # Physical groups are collections of model entities and are identified 
-        # by their dimension and by a tag.
-        # Whole domain:
-        domain_tag = e[1][1]
-        domain_physical_tag = 1001  # the volume
-        gmsh.model.addPhysicalGroup(dim=3, tags=[domain_tag], tag=domain_physical_tag)
-        gmsh.model.setPhysicalName(dim=3, tag=domain_physical_tag, name="Whole domain")
+gmsh.model.occ.synchronize()
+volumes = gmsh.model.getEntities(dim=3)
 
-        # O volume tem planos de contorno. Os planos tem retas. As retas tem pontos
-        planos = gmsh.model.getBoundary(dimTags=[(3, domain_tag)],
-                                                oriented=False)
-        retas = []
-        pontos = []
-        geometria = {}
-        n = -1
-        for plano in planos:
-            n = n + 1
-            gmsh.model.addPhysicalGroup(dim=2, tags=[plano[1]], tag=n)
-            gmsh.model.setPhysicalName(dim=2,tag=n,name=f'cc{n}')
-            retas_lim = gmsh.model.getBoundary(dimTags=[plano], oriented=False)
-            retas.append(retas_lim)
-            geometria[plano[1]] = {}
-            for r in retas:
-                noh = gmsh.model.getBoundary(dimTags=[r], oriented=False)
-                pontos.append(noh)
-                nohs = []
-                for p in noh:
-                    nohs.append(p[1])
-                geometria[plano[1]][r[1]] = nohs
-        self.geometria = geometria
 
-        # sincronizar o modelo
-        gmsh.model.geo.synchronize()
 
-        # Gerar malha
-        gmsh.model.mesh.generate(3)  # 3D
 
-        # Salvar arquivo .msh
-        gmsh.write(filename)
-        # gmsh.option.setNumber("Mesh.SaveAll", 1)
-        gmsh.finalize()
+
+# sincronizar o modelo
+gmsh.model.geo.synchronize()
+
+# Gerar malha
+gmsh.model.mesh.generate(3)  # 3D
+
+# Salvar arquivo .msh
+gmsh.write("mesh3D.msh")
+# gmsh.option.setNumber("Mesh.SaveAll", 1)
+gmsh.finalize()
