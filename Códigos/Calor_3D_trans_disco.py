@@ -31,8 +31,8 @@ re = 0.030            # raio externo [m]
 rt = 0.022            # raio interno do trilho [m]
 ri = 0.018            # raio interno [m]
 e = 0.001             # espessura [m]
-le_min = 0.75*e          # Tamanho mínimo dos elementos [m]
-le_max = 0.75*e          # Tamanho máximo dos elementos[m]
+le_min = e            # Tamanho mínimo dos elementos [m]
+le_max = e            # Tamanho máximo dos elementos[m]
 
 nome_arquivo = 'disc'
 formato = '.msh'

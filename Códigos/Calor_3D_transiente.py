@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.sparse.linalg import cg, spsolve
 from scipy.sparse import lil_matrix, csr_matrix, issparse
-from Disc_mesh import disc
+from Mesh_3D import mesh3d
 from Matrizes3D import matriz3D
 
 
@@ -27,14 +27,11 @@ teta = 0.5        # metodo dif. finitas - implicito      = 1.0;
 # 2) Input Malha
 ##############################################################################
 '''
-re = 0.030            # raio externo [m]
-rt = 0.022            # raio interno do trilho [m]
-ri = 0.018            # raio interno [m]
-e = 0.001             # espessura [m]
-le_min = 0.75*e          # Tamanho mínimo dos elementos [m]
-le_max = 0.75*e          # Tamanho máximo dos elementos[m]
-
-nome_arquivo = 'disc'
+Lx = 0.025
+Ly = 0.025
+Lz = 0.1
+le = 0.01        # tamanho medio do elemento
+nome_arquivo = 'minha_malha'
 formato = '.msh'
 
 
@@ -42,7 +39,7 @@ formato = '.msh'
 # 2.1) Malha gerada no API do GMSH
 ##############################################################################
 arquivo = nome_arquivo + formato
-malha = disc(re, rt, ri, e, le_min, le_max, filename=arquivo)
+malha = mesh3d(Lx, Ly, Lz, le, arquivo)
 
 
 ##############################################################################
