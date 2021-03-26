@@ -18,7 +18,7 @@ cv = 434          # 486 J/kg.K
 Q = 0.0           # geracao de calor
 dt = 0.1          # time step
 nIter = 15        # numero de iteracoes
-teta = 0.5        # metodo dif. finitas - implicito      = 1.0;
+teta = 1.0        # metodo dif. finitas - implicito      = 1.0;
 #                                       - explicito      = 0.0;
 #                                       - crank nicolson = 0.5.
 
@@ -29,10 +29,10 @@ teta = 0.5        # metodo dif. finitas - implicito      = 1.0;
 '''
 re = 0.030            # raio externo [m]
 rt = 0.022            # raio interno do trilho [m]
-ri = 0.018            # raio interno [m]
-e = 0.001             # espessura [m]
-le_min = e            # Tamanho mínimo dos elementos [m]
-le_max = e            # Tamanho máximo dos elementos[m]
+ri = 0.015            # raio interno [m]
+e = 0.002             # espessura [m]
+le_min = e/3          # Tamanho mínimo dos elementos [m]
+le_max = e/3          # Tamanho máximo dos elementos[m]
 
 nome_arquivo = 'disc'
 formato = '.msh'
@@ -70,15 +70,23 @@ ne = len(IEN)                       # numero de elementos
 # print('IENbound: \n', IENbound)
 
 bound1 = []  # lista com os nos da primeira superficie das ccs
-for elem in IENbound[0]:
+for elem in IENbound[1]:
     for no in elem:
-        bound1.append(no)
+        # apenas nohs maiores que o "trilho"
+        x = X[no]
+        y = Y[no]
+        if np.sqrt(x**2 + y**2) > rt:
+            bound1.append(no)
 
 bound2 = []  # lista com os nos da segunda superficie das ccs
-# for elem in IENbound[5]:
-#     for no in elem:
-#         bound2.append(no)
-
+for elem in IENbound[2]:
+    for no in elem:
+        # apenas nohs maiores que o "trilho"
+        x = X[no]
+        y = Y[no]
+        if np.sqrt(x**2 + y**2) > rt:
+            bound2.append(no)
+        
 bound = bound1 + bound2
 
 
@@ -89,8 +97,8 @@ bval = np.zeros((npoints), dtype='float')
 for b in range(len(bval)):
     if b in bound1:
         bval[b] = 100.0
-    # elif b in bound2:
-    #     bval[b] = 100.0
+    elif b in bound2:
+        bval[b] = 100.0
 # print('bval=',bval)
 
 
@@ -186,6 +194,7 @@ for n in range(0, nIter):
                                                 #simetrica positiva definida.
     T_time.append(T)
 
+    # Salva resultados para visualizacao no Paraview
     point_data = {'temp' : T}
     meshio.write_points_cells(f'sol-{n}.vtk',msh.points,
                             msh.cells,point_data=point_data,)

@@ -28,15 +28,15 @@ class disc():
 
         # construcao da superficie do trilho da pastilha
         cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, re, tag = 1)  # exterior trilho
-        cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, rt, tag = 2)  # interior trilho
+        cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, ri, tag = 2)  # interior trilho
         gmsh.model.occ.cut([(3, 1)], [(3, 2)], 3)  # disco apenas com o trilho
         # gmsh.model.setPhysicalName(3, 1, "The volume")
 
 
-        # construcao do interior do disco alem do trilho
-        cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, rt, tag = 4)
-        cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, ri, tag = 5)
-        gmsh.model.occ.cut([(3, 4)], [(3, 5)], 6)
+        # # construcao do interior do disco alem do trilho
+        # cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, rt, tag = 4)
+        # cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, ri, tag = 5)
+        # gmsh.model.occ.cut([(3, 4)], [(3, 5)], 6)
 
 
         # sincronizar o modelo
