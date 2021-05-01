@@ -10,6 +10,7 @@ from modulos.montagem import assembling3D, assembling2D
 from modulos.input import inputInfo
 
 startTime = time.time()
+open("maxT", "w").close()
 
 '''
 ##############################################################################
@@ -196,14 +197,17 @@ for n in tqdm(range(nIter)):
     # Solucao do sistema linear (AT=b)
     T = spsolve(A.tocsc(), b)
 
-    # maxT.append(max(T))
+    maxT.append(max(T))
     # Salva resultados para visualizacao no Paraview
     point_data = {'temp' : T}
     meshio.write_points_cells(f'sol-{n+1}.vtk',msh.points,
                             msh.cells,point_data=point_data,)
 
-
 print('\nSimulacao finalizada')
+
+with open("maxT.txt","a") as f:
+    f.write(f'Temperatura maxima = {max(maxT)} + \n')
+    f.write(f'Temperatura max final = {max(T)} + \n')
 
 
 '''
