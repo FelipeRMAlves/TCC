@@ -10,7 +10,7 @@ from modulos.montagem import assembling3D, assembling2D
 from modulos.input import inputInfo
 
 startTime = time.time()
-open("maxT", "w").close()
+open("Results.txt", "w").close()
 
 '''
 ##############################################################################
@@ -118,9 +118,11 @@ Tc = np.zeros((npoints), dtype='float')
 qi = np.zeros((npoints), dtype='float')
 for b in tqdm(bound1):
     qi[b] = 1.0     # Neumann - vetor para fluxo de calor
-    Tc[b] = -Tinf   # Robin
 for b in bound2:
     qi[b] = -1.0    # Neumann - vetor para fluxo de calor
+for b in IENconv1:
+    Tc[b] = -Tinf   # Robin
+for b in IENconv2:
     Tc[b] = Tinf    # Robin
 
 
@@ -205,10 +207,6 @@ for n in tqdm(range(nIter)):
 
 print('\nSimulacao finalizada')
 
-with open("maxT.txt","a") as f:
-    f.write(f'Temperatura maxima = {max(maxT)} + \n')
-    f.write(f'Temperatura max final = {max(T)} + \n')
-
 
 '''
 ##############################################################################
@@ -220,3 +218,9 @@ print(f'\n\nTempos da simulacao:')
 print(f'Tempo total -> {round(totalTime, 2)} min')
 print(f'Construcao da malha -> {round(meshTime, 2)} seg')
 print(f'Simulacao -> {round(totalTime - meshTime/60, 2)} min')
+
+with open("Results.txt","a") as f:
+    f.write(f'Simulacao realizada por: {ipt.header[0]} em {ipt.header[2]} \n\n')
+    f.write(f'Temperatura maxima = {max(maxT)} \n')
+    f.write(f'Temperatura max final = {max(T)} \n\n')
+    f.write('Para melhor visualizacao dos resultados, utilize o Paraview')
