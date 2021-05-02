@@ -19,7 +19,7 @@ def disc(re, rt, ri, e, le_min, le_max, filename, furos):
     cylinder = gmsh.model.occ.addCylinder(0, 0, 0, 0, 0, e, ri, tag=2)
 
     if furos != 'no':
-        # furos é um lista com [raio do furinho, angulo entre furos]
+        # furos eh um lista com [raio do furinho, angulo entre furos]
         r   = furos[0]
         ang = furos[1]
         d = re-(13.6/1000)
