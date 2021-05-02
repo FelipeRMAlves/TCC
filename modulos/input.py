@@ -91,3 +91,12 @@ class inputInfo():
     # Retorna as informacoes do projeto
     def projectInfo(self):
         return self.project
+
+    # Retorna o numero de ciclos
+    # Para a frenagem unica = 1
+    # Para multiplas frenagens > 1
+    def ciclos(self):
+        if self.project[1] == "unica":
+            return 1
+        else:
+            return self.project[2]
