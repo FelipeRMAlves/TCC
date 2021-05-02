@@ -220,7 +220,10 @@ print(f'Construcao da malha -> {round(meshTime, 2)} seg')
 print(f'Simulacao -> {round(totalTime - meshTime/60, 2)} min')
 
 with open("Results.txt","a") as f:
-    f.write(f'Simulacao realizada por: {ipt.header[0]} em {ipt.header[2]} \n\n')
+    f.write(f'Simulacao realizada por: {ipt.header[0]} em {ipt.header[2]}\n\n')
     f.write(f'Temperatura maxima = {max(maxT)} \n')
     f.write(f'Temperatura max final = {max(T)} \n\n')
+    f.write(f'Tempo total -> {round(totalTime, 2)} min \n')
+    f.write(f'Construcao da malha -> {round(meshTime, 2)} seg \n')
+    f.write(f'Simulacao -> {round(totalTime - meshTime/60, 2)} min \n\n')
     f.write('Para melhor visualizacao dos resultados, utilize o Paraview')
