@@ -22,7 +22,7 @@ class inputInfo():
                 filename,
                 sheet_name='Input',
                 skiprows=5,
-                usecols='B,E,G,L,O',
+                usecols='B,E,G,H,J,L,O',
                 nrows=1,
                 # dtype=object
                 )
@@ -96,7 +96,7 @@ class inputInfo():
     # Para a frenagem unica = 1
     # Para multiplas frenagens > 1
     def ciclos(self):
-        if self.project[1] == "unica":
+        if self.project[3] == "Unica":
             return 1
         else:
-            return self.project[2]
+            return self.project[4]
