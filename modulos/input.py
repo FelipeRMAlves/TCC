@@ -1,5 +1,4 @@
-# Module to read and organize the input Excel spreadsheet.
-
+# Modulo para leitura da planilha de input.
 
 class inputInfo():
 
