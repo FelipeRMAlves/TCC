@@ -172,18 +172,36 @@ meshio.write_points_cells(f'sol-0.vtk',msh.points,
 
 
 ##############################################################################
-# 5.1) Iteracoes no tempo
+# 5.1) Preparando listas de coeficientes (q e h)
 ##############################################################################
-print('\nEquacao transiente:')
-
-i = 0
-maxT = []
+ciclos = int(ipt.ciclos())
 rel = nIter/(len(qcoefs))
+
+qcoefs2 = []
+hcoefs2 = []
+if ciclos > 1:
+    print('Frenagem multipla')
+    rel = nIter/ciclos
+    qcoefs2 = []
+    hcoefs2 = []
+    for r in range(int(ciclos)):
+        qcoefs2.extend(qcoefs)
+        hcoefs2.extend(hcoefs)
+else:
+    for i in range(len(qcoefs)):
+        for r in range(int(rel)):
+            qcoefs2.append(qcoefs[i])
+            hcoefs2.append(hcoefs[i])
+
+
+##############################################################################
+# 5.2) Iteracoes no tempo
+##############################################################################
+maxT = []
+print('\nEquacao transiente:')
 for n in tqdm(range(nIter)):
-    if n >= (i+1)*rel:
-        i = i+1
-    h = hcoefs[i][0]
-    qm = qcoefs[i][0]/(2*Ad)
+    h = hcoefs2[n][0]
+    qm = qcoefs2[n][0]/(2*Ad)
     q = qm*qi                      # Vetor de fluxo de energia
 
     Mh = h*MC
@@ -210,7 +228,7 @@ print('\nSimulacao finalizada')
 
 '''
 ##############################################################################
-# 6) Tempos de simulacao
+# 6) Tempos de simulacao e Resultados em .txt
 ##############################################################################
 '''
 totalTime = time.time()/60 - startTime/60
