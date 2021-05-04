@@ -30,7 +30,6 @@ cv = 486
 Tin = 35
 
 
-
 '''
 ##############################################################################
 # 2) Input - gerar malha no API do GMSH
@@ -119,10 +118,6 @@ main = assembling3D(IEN,npoints,ne,X=X,Y=Y,Z=Z,k=k)
 K = main[0]
 M = main[1]
 
-# print('\nBoundary Assembling:')
-# boundAss = assembling2D(IENboundG,npoints,X=X,Y=Y,Z=Z)
-# MC = boundAss
-
 
 ##############################################################################
 # 5) Montagem do sistema linear
@@ -133,7 +128,6 @@ K = K.tocsr()
 
 # Lado esquerdo do sistema
 A = rho*cv*M + (theta)*dt*(K)  # + MC nas iteracoes
-
 # # Salvar A em A2
 # A2 = A.copy()
 # A2 = A2.todense()
@@ -179,41 +173,15 @@ if condCont == 1:  # Dirichlet
         for i in bound:
             b[i] = bval[i]  # mantem os nohs de contorno c/ a temp de contorno
 
-    # Solucao do sistema linear (AT=b)
-    T = spsolve(A.tocsc(), b) # cg(H, f)[0] -> apenas zerando coluna:
+        # Solucao do sistema linear (AT=b)
+        T = spsolve(A.tocsc(), b) # cg(H, f)[0] -> apenas zerando coluna:
                                             # simetrica positiva definida.
 
-    # Salva resultados para visualizacao no Paraview
-    point_data = {'temp' : T}
-    meshio.write_points_cells(f'sol-{n+1}.vtk',msh.points,
+        # Salva resultados para visualizacao no Paraview
+        point_data = {'temp' : T}
+        meshio.write_points_cells(f'sol-{n+1}.vtk',msh.points,
                             msh.cells,point_data=point_data,)
 
-# else:
-#     i = 0
-#     for n in tqdm(range(nIter)):
-#         # qm = q0*(1-(n*dt/t_stop))    # Fluxo de calor momentaneo    [W/m^2]
-#         # q = qm*qi                    # Vetor de fluxo de energia
-#         # h = 100
-
-#         if n >= (i+1)*100:
-#             i = i+1
-
-#         h = hList[i]
-#         qm = qList[i]/(2*Ad)
-
-#         q = qm*qi                      # Vetor de fluxo de energia
-#         MC = h*MG
-#         # Lado direito da equacao
-#         f = rho*cv*M.dot(T) + dt*MG.dot(q) + dt*MC.dot(Tc)  # Implicito e Q=0
-
-
-#         # Solucao do sistema linear
-#         T = spsolve(H.tocsc(), f)
-
-#         # Salva resultados para visualizacao no Paraview
-#         point_data = {'temp' : T}
-#         meshio.write_points_cells(f'sol-{n+1}.vtk',msh.points,
-#                                 msh.cells,point_data=point_data,)
 
 print('\nSimulacao finalizada')
 
