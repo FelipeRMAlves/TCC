@@ -3,11 +3,15 @@ import meshio
 import numpy as np
 from numpy import pi, sin, cos, sinh
 import matplotlib.pyplot as plt
+import matplotlib as mtp
 import pandas as pd
 from scipy.sparse.linalg import cg, spsolve
 from scipy.sparse import lil_matrix, csr_matrix, issparse
-from Mesh_3D import mesh3d
-from Matrizes3D import matriz3D
+
+from modulos.malha import cube, boundf
+from modulos.matrizes import matriz3D, matriz2D
+from modulos.montagem import assembling3D, assembling2D
+
 
 
 '''
@@ -17,6 +21,7 @@ from Matrizes3D import matriz3D
 '''
 rho = 1        # 7870 kg/m^3
 cv = 1          # 486 J/kg.K
+k = 1
 Q = 0.0           # geracao de calor
 dt = 0.1          # time step
 nIter = 50      # numero de iteracoes
@@ -43,7 +48,7 @@ formato = '.msh'
 # 2.1) Malha gerada no API do GMSH
 ##############################################################################
 arquivo = nome_arquivo + formato
-# malha = mesh3d(Lx, Ly, Lz, le, arquivo)
+# malha = cube(Lx, Ly, Lz, le, arquivo)
 
 
 ##############################################################################
@@ -136,9 +141,9 @@ for e in range(0, ne):
     v4 = IEN[e, 3]          # vertice 4
 
     # importando matrizes do modulo Matrizes3D
-    m = matriz3D(vi=v1, vj=v2, vk=v3, vl=v4, X=X, Y=Y, Z=Z)
+    m = matriz3D(v1=v1, v2=v2, v3=v3, v4=v4, X=X, Y=Y, Z=Z)
     melem = m.matrizm()
-    kelem = m.matrizk()
+    kelem = m.matrizk(k)
 
     for ilocal in range(0, 4):
         iglobal = IEN[e, ilocal]
@@ -259,7 +264,7 @@ T_an = T1 + ((2*(T2-T1)/pi) * somat_xy)           # Temperatura analitica
 Y_meio = []
 T_an_meio = []
 for t in range(len(T_an)):
-    if X2D[t] > 0.79 and X2D[t] < 0.81:
+    if X2D[t] > 0.49 and X2D[t] < 0.51:
         Y_meio.append(Y2D[t])
         T_an_meio.append(T_an[t])
 
@@ -268,18 +273,20 @@ T_cont = []  # Temp final na bound5 para comparacao com sol analitica
 T_num_meio = []  # Temp numerica no x=0.75
 for i in bound5:
     T_cont.append(T[i])
-    if X[i] > 0.79 and X[i] < 0.81:
+    if X[i] > 0.49 and X[i] < 0.51:
         T_num_meio.append(T[i])
 
 
 plt.plot(Y_meio, T_an_meio, 'rx', label='Solução Analítica')
 plt.plot(Y_meio, T_num_meio, 'bo', label='Solução Numérica', 
                                 linewidth=2.2,markersize=2.3)
+mtp.rcParams['font.family'] = 'STIXGeneral'
 ax = plt.axes()
-ax.set_xlabel(r'Y [m]', fontsize=14)
-ax.set_ylabel(r'T [ºC]', fontsize=14)
+ax.set_xlabel(r'Y [m]', fontsize=16)
+ax.set_ylabel(r'T [ºC]', fontsize=16)
+ax.grid()
 plt.legend()
-plt.title(f'Temperatura em X = 0.75', fontsize=16)
+plt.title(f'Temperatura em X = 0.5', fontsize=18)
 plt.show()
 
 
