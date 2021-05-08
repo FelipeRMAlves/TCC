@@ -26,6 +26,7 @@ ambt    = ipt.getAmb()          # Temperatura inicial e do ar
 qcoefs  = ipt.getCoefs('q')     # Fluxo de calor
 hcoefs  = ipt.getCoefs('h')     # Coeficientes de conveccao
 
+
 ##############################################################################
 # 1.1) Parametros da simulacao
 ##############################################################################
@@ -35,26 +36,28 @@ theta = param[2]                # Metodo dif. finitas - implicito      = 1.0;
 #                                                     - explicito      = 0.0;
 #                                                     - crank nicolson = 0.5.
 
+
 ##############################################################################
 # 1.2) Parametros fisicos
 ##############################################################################
 Tin  = ambt[0]                  # Temp inicial do solido             [ºC]
 Tinf = ambt[1]                  # Temp do fluido na conveccao        [ºC]
 
+
 ##############################################################################
 # 1.3) Dados do Disco de freio
 ##############################################################################
-e   = geom[0]/1000              # Espessura do disco                 [m]
-re  = geom[1]/1000              # Raio externo do disco              [m]
-ri  = geom[2]/1000              # Raio interno do disco              [m]
-rt  = geom[3]/1000              # Raio interno da pastilha           [m]
-r   = geom[4]/1000              # Raio dos furinhos                  [m]
-k   = prop[0]                   # Condutividade termica disco        [W/m.K]
-cv  = prop[1]                   # Calor especifico do disco          [J/kg.K]
-rho = prop[2]                   # Massa especifica do disco          [kg/m^3]
-Ad  = np.pi*((re**2)-(rt**2))   # Area de troca de calor do disco    [m^2]
+e    = geom[0]/1000             # Espessura do disco                 [m]
+re   = geom[1]/1000             # Raio externo do disco              [m]
+ri   = geom[2]/1000             # Raio interno do disco              [m]
+rt   = geom[3]/1000             # Raio interno da pastilha           [m]
+r    = geom[4]/1000             # Raio dos furinhos                  [m]
+k    = prop[0]                  # Condutividade termica disco        [W/m.K]
+cv   = prop[1]                  # Calor especifico do disco          [J/kg.K]
+rho  = prop[2]                  # Massa especifica do disco          [kg/m^3]
+Ad   = np.pi*((re**2)-(rt**2))  # Area de troca de calor do disco    [m^2]
 Afur = 32*np.pi*(r**2)          # Area dos furinhos
-Ad = Ad - Afur                  # Area disco descontando os furinhos
+Ad   = Ad - Afur                # Area disco descontando os furinhos
 
 
 '''
@@ -66,7 +69,7 @@ Ad = Ad - Afur                  # Area disco descontando os furinhos
 le_min = param[3]/1000          # Tamanho minimo dos elementos [m]
 le_max = param[3]/1000          # Tamanho maximo dos elementos [m]
 filename = 'disc.msh'
-disc(re, rt, ri, e, le_min, le_max, filename, furos=[r,(11.25/180)*np.pi])
+disc(re, rt, ri, e, le_min, le_max, filename, furos=[r, (11.25/180)*np.pi])
 
 # Salvando o tempo levado para construcao da malha
 meshTime = time.time() - startTime
@@ -81,7 +84,7 @@ Y = msh.points[:, 1]                # Coordenada y dos nohs
 Z = msh.points[:, 2]                # Coordenada z dos nohs
 npoints = len(X)                    # Numero de nos
 
-pol  = polar(X,Y,Z)
+pol  = polar(X, Y, Z)
 ang  = pol[0]
 raio = pol[1]
 
@@ -98,7 +101,7 @@ ne = len(IEN)
 ##############################################################################
 # 2.3) Nohs de contorno
 ##############################################################################
-boundDisco = contornoDisco(IENbound,raio,Z,rt,e)
+boundDisco = contornoDisco(IENbound, raio, Z, rt, e)
 bound1 = boundDisco[0]
 bound2 = boundDisco[1]
 IENboundG1 = boundDisco[2]
@@ -132,16 +135,16 @@ for b in IENconv2:
 ##############################################################################
 '''
 print('\nMain Assembling:')
-main = assembling3D(IEN,npoints,ne,X=X,Y=Y,Z=Z,k=k)
+main = assembling3D(IEN, npoints, ne, X=X, Y=Y, Z=Z, k=k)
 K = main[0]
 M = main[1]
 
 print('\nBoundary Assembling:')
-MC = assembling2D(IENboundG,npoints,X=X,Y=Y,Z=Z,c=1)
+MC = assembling2D(IENboundG, npoints, X=X, Y=Y, Z=Z, c=1)
 
 # Matrizes de conveccao precisam ter sinal
-Mh1 = assembling2D(IENconv1,npoints,X=X,Y=Y,Z=Z,c= 1)
-Mh2 = assembling2D(IENconv2,npoints,X=X,Y=Y,Z=Z,c=-1)
+Mh1 = assembling2D(IENconv1, npoints, X=X, Y=Y, Z=Z, c=1)
+Mh2 = assembling2D(IENconv2, npoints, X=X, Y=Y, Z=Z, c=-1)
 Mhin = Mh1 + Mh2
 
 
@@ -166,9 +169,9 @@ b = np.zeros((npoints), dtype='double')       # Lado direito da eq
 T = Tin*np.ones((npoints), dtype='double')    # Temperaturas iniciais
 
 # Salva resultados iniciais para visualizacao no Paraview
-point_data = {'temp' : T}
-meshio.write_points_cells(f'sol-0.vtk',msh.points,
-                        msh.cells,point_data=point_data,)
+point_data = {'temp': T}
+meshio.write_points_cells(f'sol-0.vtk', msh.points,
+                          msh.cells, point_data=point_data,)
 
 
 ##############################################################################
@@ -219,9 +222,9 @@ for n in tqdm(range(nIter)):
 
     maxT.append(max(T))
     # Salva resultados para visualizacao no Paraview
-    point_data = {'temp' : T}
-    meshio.write_points_cells(f'sol-{n+1}.vtk',msh.points,
-                            msh.cells,point_data=point_data,)
+    point_data = {'temp': T}
+    meshio.write_points_cells(f'sol-{n+1}.vtk', msh.points,
+                              msh.cells, point_data=point_data,)
 
 print('\nSimulacao finalizada')
 
@@ -237,7 +240,7 @@ print(f'Tempo total -> {round(totalTime, 2)} min')
 print(f'Construcao da malha -> {round(meshTime, 2)} seg')
 print(f'Simulacao -> {round(totalTime - meshTime/60, 2)} min')
 
-with open("Results.txt","a") as f:
+with open('Results.txt', 'a') as f:
     f.write(f'Simulacao realizada por: {ipt.header[0]} em {ipt.header[2]}\n\n')
     f.write(f'Temperatura maxima = {max(maxT)} \n')
     f.write(f'Temperatura max final = {max(T)} \n\n')

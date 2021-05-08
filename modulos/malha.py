@@ -9,7 +9,7 @@ def disc(re, rt, ri, e, le_min, le_max, filename, furos):
     gmsh.initialize()
     gmsh.model.add("minha_malha")
 
-    # in order to output messages on the terminal, just set the 
+    # in order to output messages on the terminal, just set the
     # "General.Terminal" option to 1:
     gmsh.option.setNumber("General.Terminal", 1)
 
@@ -20,39 +20,39 @@ def disc(re, rt, ri, e, le_min, le_max, filename, furos):
 
     if furos != 'no':
         # furos eh um lista com [raio do furinho, angulo entre furos]
-        r   = furos[0]
+        r = furos[0]
         ang = furos[1]
         d = re-(13.6/1000)
         p = ri+(13.6/1000)
-        coordIn = [d,p]
-        
+        coordIn = [d, p]
+
         coord = []
-        for i in range(1,9):
+        for i in range(1, 9):
             coord.append([d*np.cos(i*ang), d*np.sin(i*ang)])
-        for i in range(1,9):
+        for i in range(1, 9):
             coord.append([p*np.cos(i*ang), p*np.sin(i*ang)])
 
         t = 4
         for c in coordIn:
-            gmsh.model.occ.addCylinder( c, 0, 0, 0, 0, e, r, tag=t)
+            gmsh.model.occ.addCylinder(c, 0, 0, 0, 0, e, r, tag=t)
             gmsh.model.occ.addCylinder(-c, 0, 0, 0, 0, e, r, tag=t+1)
             gmsh.model.occ.addCylinder(0, c, 0, 0, 0, e, r, tag=t+2)
-            gmsh.model.occ.addCylinder(0,-c, 0, 0, 0, e, r, tag=t+3)
+            gmsh.model.occ.addCylinder(0, -c, 0, 0, 0, e, r, tag=t+3)
             t = t+4
 
         for c in coord:
-            gmsh.model.occ.addCylinder( c[0], c[1],0,0,0,e,r,tag=t)
-            gmsh.model.occ.addCylinder(-c[0], c[1],0,0,0,e,r,tag=t+1)
-            gmsh.model.occ.addCylinder(-c[0],-c[1],0,0,0,e,r,tag=t+2)
-            gmsh.model.occ.addCylinder( c[0],-c[1],0,0,0,e,r,tag=t+3)
+            gmsh.model.occ.addCylinder(c[0], c[1], 0, 0, 0, e, r, tag=t)
+            gmsh.model.occ.addCylinder(-c[0], c[1], 0, 0, 0, e, r, tag=t+1)
+            gmsh.model.occ.addCylinder(-c[0], -c[1], 0, 0, 0, e, r, tag=t+2)
+            gmsh.model.occ.addCylinder(c[0], -c[1], 0, 0, 0, e, r, tag=t+3)
             t = t+4
 
-        gmsh.model.occ.cut([(3, 1)], [(3, i) for i in range(4,t)], 3)  # furinhos
+        gmsh.model.occ.cut([(3, 1)], [(3, i)
+                                      for i in range(4, t)], 3)  # furinhos
         domain = gmsh.model.occ.cut([(3, 3)], [(3, 2)], 4)  # miolo do disco
 
     else:
         gmsh.model.occ.cut([(3, 1)], [(3, 2)], 4)  # apenas miolo do disco
-
 
     # sincronizar o modelo
     gmsh.model.occ.synchronize()
@@ -71,7 +71,7 @@ def disc(re, rt, ri, e, le_min, le_max, filename, furos):
     gmsh.finalize()
 
 
-def polar(X,Y,Z):
+def polar(X, Y, Z):
     npoints = len(X)                    # Numero de nos
 
     # listas com angulo e raio de cada noh
@@ -104,8 +104,8 @@ def contornoDisco(IENbound, raio, Z, rt, e):
     bound2 = []          # Lista com os nohs da 2a superficie das ccs
     IENboundG1 = []      # IEN de fluxo de calor (contorno de neumann)
     IENboundG2 = []      # IEN de fluxo de calor (contorno de neumann)
-    IENconv1= []         # IEN de conveccao (contorno de robin)
-    IENconv2= []         # IEN de conveccao (contorno de robin)
+    IENconv1 = []         # IEN de conveccao (contorno de robin)
+    IENconv2 = []         # IEN de conveccao (contorno de robin)
 
     for elem in IENbound[1]:
         aux1 = []
@@ -146,7 +146,7 @@ def cube(Lx, Ly, Lz, le, filename):
     # Before using any functions in the Python API, Gmsh must be initialized:
     gmsh.initialize()
 
-    # in order to output messages on the terminal, just set the 
+    # in order to output messages on the terminal, just set the
     # "General.Terminal" option to 1:
     gmsh.option.setNumber("General.Terminal", 1)
 
@@ -180,17 +180,19 @@ def cube(Lx, Ly, Lz, le, filename):
     h = Lz  # geometry height in the z-direction
     e = gmsh.model.geo.extrude([(2, 1)], 0, 0, h)
 
-    # Physical groups are collections of model entities and are identified 
+    # Physical groups are collections of model entities and are identified
     # by their dimension and by a tag.
     # Whole domain:
     domain_tag = e[1][1]
     domain_physical_tag = 1001  # the volume
-    gmsh.model.addPhysicalGroup(dim=3, tags=[domain_tag], tag=domain_physical_tag)
-    gmsh.model.setPhysicalName(dim=3, tag=domain_physical_tag, name="Whole domain")
+    gmsh.model.addPhysicalGroup(
+        dim=3, tags=[domain_tag], tag=domain_physical_tag)
+    gmsh.model.setPhysicalName(
+        dim=3, tag=domain_physical_tag, name="Whole domain")
 
     # O volume tem planos de contorno. Os planos tem retas. As retas tem pontos
     planos = gmsh.model.getBoundary(dimTags=[(3, domain_tag)],
-                                            oriented=False)
+                                    oriented=False)
     retas = []
     pontos = []
     geometria = {}
@@ -198,7 +200,7 @@ def cube(Lx, Ly, Lz, le, filename):
     for plano in planos:
         n = n + 1
         gmsh.model.addPhysicalGroup(dim=2, tags=[plano[1]], tag=n)
-        gmsh.model.setPhysicalName(dim=2,tag=n,name=f'cc{n}')
+        gmsh.model.setPhysicalName(dim=2, tag=n, name=f'cc{n}')
         retas_lim = gmsh.model.getBoundary(dimTags=[plano], oriented=False)
         retas.append(retas_lim)
         geometria[plano[1]] = {}

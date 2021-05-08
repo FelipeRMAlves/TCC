@@ -1,5 +1,6 @@
 # Modulo para leitura da planilha de input.
 
+
 class inputInfo():
 
     # filename = string containing the excel input filename location
@@ -63,7 +64,6 @@ class inputInfo():
         self.q = heatFlux.values.tolist()
         self.h = convCoef.values.tolist()
 
-
     # Retorna os parametros da simulacao
     def getParam(self):
         return self.read[1:5]
@@ -81,7 +81,7 @@ class inputInfo():
         return self.read[13:15]
 
     # Retorna as temperaturas inicial e ambiente
-    def getCoefs(self,coef):
+    def getCoefs(self, coef):
         if coef == 'q':
             return self.q
         elif coef == 'h':

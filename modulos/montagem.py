@@ -4,7 +4,7 @@ from modulos.matrizes import matriz3D, matriz2D
 from scipy.sparse import lil_matrix, csr_matrix, issparse
 
 
-def assembling3D(IEN,npoints,ne,X,Y,Z,k):
+def assembling3D(IEN, npoints, ne, X, Y, Z, k):
     # LIL is a convenient format for constructing sparse matrices
     K = lil_matrix((npoints, npoints), dtype='double')
     M = lil_matrix((npoints, npoints), dtype='double')
@@ -25,13 +25,13 @@ def assembling3D(IEN,npoints,ne,X,Y,Z,k):
             iglobal = IEN[e, ilocal]
             for jlocal in range(0, 4):
                 jglobal = IEN[e, jlocal]
-                K[iglobal, jglobal] = K[iglobal, jglobal] + kelem[ilocal, jlocal]
-                M[iglobal, jglobal] = M[iglobal, jglobal] + melem[ilocal, jlocal]
+                K[iglobal, jglobal] = K[iglobal, jglobal]+kelem[ilocal, jlocal]
+                M[iglobal, jglobal] = M[iglobal, jglobal]+melem[ilocal, jlocal]
 
     return K, M
 
 
-def assembling2D(IENboundG,npoints,X,Y,Z,c):
+def assembling2D(IENboundG, npoints, X, Y, Z, c):
     # Matriz de massa do contorno (de Neumann e Robin)
     MC = lil_matrix((npoints, npoints), dtype='double')
     for e in tqdm(IENboundG):
@@ -39,7 +39,7 @@ def assembling2D(IENboundG,npoints,X,Y,Z,c):
         v1 = e[0]
         v2 = e[1]
         v3 = e[2]
-        v = [v1,v2,v3]
+        v = [v1, v2, v3]
 
         # importando matrizes do modulo matrizesMEF
         # obs: o codigo pode ser usado pois os elementos estao sempre na mesma
@@ -51,6 +51,7 @@ def assembling2D(IENboundG,npoints,X,Y,Z,c):
             iglobal = v[ilocal]
             for jlocal in range(0, 3):
                 jglobal = v[jlocal]
-                MC[iglobal, jglobal] = MC[iglobal, jglobal] + c*melemg[ilocal, jlocal]
-                
+                MC[iglobal, jglobal] = MC[iglobal, jglobal] + \
+                    c*melemg[ilocal, jlocal]
+
     return MC
